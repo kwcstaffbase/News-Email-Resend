@@ -1,0 +1,17 @@
+[install]
+# Private @staffbase/* packages (design system, plugins-client-sdk, staffbase-plugin-sdk, etc.)
+# are hosted on a scoped private npm registry. The registry URL and auth token are configured
+# in .npmrc (git-ignored) — see README.md for how to obtain and set the Staffbase npm token.
+
+[test]
+# bun test auto-discovers and runs all *.test.ts files without extra configuration.
+# Tests live alongside source in server/src/. Run with: bun test
+# Client tests use Vitest (bunx vitest run), E2E tests use Playwright (bunx playwright test).
+root = "server/src"
+# Coverage baseline (as of 2025-04): ~75% functions / ~82% lines aggregate.
+# Run `bun test --coverage` locally to check. Threshold enforcement is added as coverage improves.
+# Preload forces NODE_ENV=development so IS_REAL_LOCALDEV's NODE_ENV allowlist
+# in app.ts evaluates true at module-load time (Bun's default test runner sets
+# NODE_ENV=test). Without this, every localdev bypass path stays gated off and
+# the tests that exercise them would silently 401.
+preload = ["./server/src/__tests__/_test-env.ts"]

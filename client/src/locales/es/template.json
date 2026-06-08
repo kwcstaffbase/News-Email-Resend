@@ -1,0 +1,14 @@
+{
+  "placeholder": {
+    "user-title": "Vista de usuario final — empieza a construir aquí",
+    "user-body": "Reemplaza este marcador en client/src/pages/EndUserView.tsx con tu interfaz de usuario final."
+  },
+  "error-boundary": {
+    "title": "Algo salió mal.",
+    "reload": "Recargar"
+  },
+  "session": {
+    "expired-title": "Sesión expirada",
+    "expired-body": "Tu sesión ha finalizado. Por favor, recarga la página para continuar."
+  }
+}

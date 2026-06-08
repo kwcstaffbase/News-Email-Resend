@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1747267200000,
+      "tag": "0000_initial_template",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1779430048634,
+      "tag": "0001_add_users_last_verified_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779494400000,
+      "tag": "0002_users_composite_pk",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+-- `last_verified_at` tracks the most recent moment the upstream Staffbase
+-- platform confirmed this user still exists. The per-request strict-GDPR
+-- gate (`revalidateAccessor()` in server/src/lib/user-cache.ts) reads this
+-- column to short-circuit SCIM round-trips when the row is younger than
+-- `USER_ACCESSOR_REVALIDATE_SECONDS` (default 60s). On TTL expiry the gate
+-- re-confirms upstream and overwrites this timestamp; on a 404 / deleted
+-- response it triggers `cleanupDeletedUser()` and the row is removed.
+ALTER TABLE "users" ADD COLUMN "last_verified_at" timestamp;
+
+-- Rollback (NOT executed automatically — kept here for operator reference in
+-- case this migration needs to be reverted during an incident). Drizzle's
+-- migration framework is forward-only; an operator must run this SQL manually:
+--
+--   ALTER TABLE "users" DROP COLUMN "last_verified_at";
+--
+-- Side effects of rollback: the per-request strict-GDPR gate
+-- (`revalidateAccessor()` in server/src/lib/user-cache.ts) falls back to the
+-- TTL-less path — every authenticated request would hit the upstream Staffbase
+-- API. This will increase load on /api/users/* by ~1 request per accessor per
+-- request until the column is restored. Drop only if the gate is also disabled
+-- (e.g. via a code rollback in the same change window).

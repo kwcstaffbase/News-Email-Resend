@@ -1,0 +1,14 @@
+{
+  "placeholder": {
+    "user-title": "End User View — start building here",
+    "user-body": "Replace this placeholder in client/src/pages/EndUserView.tsx with your end-user interface."
+  },
+  "error-boundary": {
+    "title": "Something went wrong.",
+    "reload": "Reload"
+  },
+  "session": {
+    "expired-title": "Session expired",
+    "expired-body": "Your session has ended. Please reload the page to continue."
+  }
+}

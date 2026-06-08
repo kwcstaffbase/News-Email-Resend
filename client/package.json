@@ -1,0 +1,52 @@
+{
+  "name": "@cstech/cc-custom-plugin-template-client",
+  "version": "2026.23.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5",
+    "@radix-ui/react-select": "^2.2.6",
+    "@staffbase/design": "16.3.0",
+    "@staffbase/plugins-client-sdk": "^3.1.1",
+    "@staffbase/staffbase-plugin-sdk": "~1.3.1",
+    "@tanstack/react-query": "^5",
+    "clsx": "^2.1.1",
+    "i18next": "^26.0.3",
+    "i18next-browser-languagedetector": "^8.0.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-hook-form": "^7",
+    "react-hot-toast": "^2.6.0",
+    "react-i18next": "^17.0.2",
+    "react-router-dom": "^7",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2",
+    "@tailwindcss/vite": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^25",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6",
+    "@vitest/coverage-v8": "^4.1.4",
+    "jsdom": "^29.0.2",
+    "lightningcss": "^1",
+    "msw": "^2.13.2",
+    "tailwindcss": "^4",
+    "typescript": "^6",
+    "vite": "^8",
+    "vitest": "^4.1.4"
+  }
+}

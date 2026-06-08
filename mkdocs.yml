@@ -1,0 +1,54 @@
+site_name: Custom Plugin Template
+nav:
+  - Home: index.md
+  - Guides:
+    - Local Development: guides/local-development.md
+    - Testing: guides/testing.md
+    - Extending: guides/extending.md
+    - Template sync: guides/template-sync.md
+  - Skills:
+    - Overview: skills/index.md
+  - Architecture:
+    - Overview: architecture/architecture.md
+    - Database: architecture/database.md
+    - Sessions: architecture/sessions.md
+    - GDPR hardening — overview: architecture/gdpr-hardening.md
+    - GDPR hardening — internals: architecture/gdpr-internals.md
+    - i18n: architecture/i18n.md
+  - Reference:
+    - API Reference: reference/api.md
+    - Logging: reference/logging.md
+    - Log catalog: reference/log-catalog.md
+  - Observability:
+    - Logging & metrics guidelines: observability/logging-guidelines.md
+    - How to verify F2–F9: observability/how-to-verify-f2-f9.md
+    - Phase F findings: observability/phase-f-findings.md
+  - Architecture Decision Records:
+    - ADR-0001 — Bun Runtime: adrs/0001-bun-runtime.md
+    - ADR-0002 — Cookie-first Sessions: adrs/0002-cookie-first-sessions.md
+    - ADR-0003 — Biome Linter: adrs/0003-biome-linter.md
+    - ADR-0004 — Encrypted API Token: adrs/0004-encrypted-api-token-in-db.md
+    - ADR-0005 — JWT Transport Hardening: adrs/0005-jwt-transport-hardening.md
+    - ADR-0006 — GitOps Deployment: adrs/0006-gitops-deployment.md
+    - ADR-0007 — Shadow DOM Widget: adrs/0007-widget-shadow-dom.md
+    - ADR-0008 — Widget Installation Picker: adrs/0008-widget-installation-picker.md
+    - ADR-0009 — Observability Baseline: adrs/0009-observability-baseline.md
+    - ADR-0011 — User Cache Lifecycle: adrs/0011-user-cache-lifecycle.md
+    - ADR-0012 — Strict-GDPR User Lifecycle: adrs/0012-strict-gdpr-user-lifecycle.md
+    - ADR-0013 — Logging Contract: adrs/0013-logging-contract.md
+    - ADR-0014 — Observability Hardening: adrs/0014-observability-hardening.md
+plugins:
+  - techdocs-core
+extra_css:
+  - stylesheets/mermaid.css
+markdown_extensions:
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - md_in_html
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition

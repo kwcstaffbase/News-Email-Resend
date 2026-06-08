@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Plugin Template Widget — Preview</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 960px;
+        margin: 32px auto;
+        padding: 0 24px;
+        color: #1e293b;
+      }
+      h1 { font-size: 20px; margin: 0 0 16px; }
+      label { font-size: 13px; color: #475569; display: block; margin: 12px 0 4px; }
+      input { padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; width: 320px; }
+      .frame {
+        margin-top: 24px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Plugin Template Widget — Preview</h1>
+    <p>
+      Edit widget attributes below and the widget re-renders on change. Edits to
+      <code>src/</code> trigger an auto-rebuild.
+    </p>
+
+    <label for="installation_id">installation_id</label>
+    <input
+      id="installation_id"
+      type="text"
+      placeholder="69daaa31719d6e626647364c"
+    />
+
+    <div class="frame">
+      <plugin-template-widget id="widget"></plugin-template-widget>
+    </div>
+
+    <script>
+      // The widget script registers itself via defineBlock() and then
+      // upgrades the <plugin-template-widget> custom element. The preview
+      // server provides a no-op defineBlock so the SDK can finish loading.
+      // (For full editor preview, install @staffbase/widget-sdk-preview.)
+      window.defineBlock = function (def) {
+        window.__BLOCK_DEFINITION__ = def;
+        const tag = def.blockDefinition.name;
+        if (!customElements.get(tag)) {
+          const BaseBlockClass = class extends HTMLElement {
+            // SDK base contract subset — the template widget only uses
+            // shadowRoot/attachShadow/getAttribute/setAttribute.
+            renderBlock() {}
+            unmountBlock() {}
+            get contentLanguage() { return null; }
+          };
+          // SDK's widgetApi is unused by the template; pass an empty stub.
+          const widgetApi = { getBranchInformation: () => ({ webUrl: "" }) };
+          const Cls = def.blockDefinition.factory(BaseBlockClass, widgetApi);
+          customElements.define(tag, Cls);
+          // Trigger the viewer-side render path so observedAttributes fire.
+          const el = document.getElementById("widget");
+          if (el) Cls.prototype.renderBlock?.call(el, el);
+        }
+      };
+
+      const input = document.getElementById("installation_id");
+      const widget = document.getElementById("widget");
+      input.addEventListener("input", () => {
+        widget.setAttribute("installation_id", input.value);
+      });
+    </script>
+
+    <script src="/widget/bundle.js" defer></script>
+  </body>
+</html>

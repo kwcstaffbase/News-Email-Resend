@@ -1,0 +1,24 @@
+{
+  "name": "cc-custom-plugin-template-widget",
+  "label": "Plugin Template Widget",
+  "version": "2026.23.1",
+  "private": true,
+  "description": "Scaffolding for a Staffbase custom widget (Shadow DOM, @staffbase/widget-sdk). Empty placeholder — replace the render logic in src/widget.ts with your plugin-specific UI.",
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "preview": "bun scripts/preview.ts",
+    "type-check": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@staffbase/widget-sdk": "^3.17.0",
+    "react": "18"
+  },
+  "devDependencies": {
+    "@types/bun": "^1",
+    "@types/json-schema": "^7",
+    "@types/node": "^24",
+    "@types/react": "18",
+    "typescript": "^5"
+  }
+}

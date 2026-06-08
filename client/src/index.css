@@ -1,0 +1,107 @@
+/* 1. Declare all cascade layers upfront */
+@layer theme, base, components, utilities;
+
+/* 2. Tailwind core — theme tokens and preflight reset */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+
+/* 3. Staffbase Design System into their respective layers */
+@import "@staffbase/design/css-variables/global-colors.css" layer(theme);
+@import "@staffbase/design/css-variables/component-colors.css" layer(theme);
+@import "@staffbase/design/fonts/inter.css" layer(base);
+@import "@staffbase/design/fonts/epilogue.css" layer(base);
+@import "@staffbase/design/style.css" layer(components);
+
+/* 3a. Customer typefaces are loaded by the per-customer theme injected server-side
+   into <style id="customer-theme"> before </head>. Nothing is loaded here.
+   Use the `font-brand` Tailwind class on user-facing layout roots only.
+   Admin and Studio views keep the Staffbase DS fonts (Inter / Epilogue). */
+
+/* 4. Tailwind utilities — highest cascade priority */
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* 5. Point to JS config (loads the Staffbase DS preset) */
+@config '../tailwind.config.ts';
+
+/* 6. Base resets */
+@layer base {
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		/* Tailwind v4 defaults border-color to currentcolor; restore Staffbase token */
+		border-color: var(--sb-color-grey-200, currentcolor);
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	svg {
+		/* Use currentColor so that DS component icons (checkboxes, buttons, etc.)
+		   correctly inherit their intended color from the parent's text-* class.
+		   User-facing icon buttons already carry explicit text-brand-grey-dark or
+		   similar classes, so their fill stays grey as intended. */
+		fill: currentColor;
+	}
+
+	body {
+		margin: 0;
+	}
+}
+
+/* 7. Nested dialog — dim the parent popup when a child dialog is open.
+   Base UI v1 suppresses the nested backdrop and sets [data-nested-dialog-open]
+   on the outer popup instead. We use brightness to create the visual hierarchy. */
+@layer components {
+	.ds-dialog__popup[data-nested-dialog-open] {
+		filter: brightness(0.8);
+	}
+}
+
+/* 8. Customer brand tokens — Tailwind classes (bg-brand-primary, text-brand-link, etc.)
+   resolve via CSS custom properties set by the per-customer theme injected server-side.
+   Each customer provides client/public/customers/{branch_slug}/theme.css which sets
+   --brand-* variables on :root. The var() fallbacks here apply when no theme is injected
+   (e.g. SSR error path) and define a neutral Staffbase-aligned default look.
+
+   ┌─────────────────────────────────────────────────────────────────────────────┐
+   │  To add a new customer: create client/public/customers/{slug}/theme.css    │
+   │  with :root { --brand-* } overrides. All frontend components pick it up    │
+   │  automatically — no component code changes needed.                         │
+   │                                                                             │
+   │  NOTE: These tokens are for user-facing frontend views only.               │
+   │  Admin and Studio components must always use Staffbase DS tokens.          │
+   └─────────────────────────────────────────────────────────────────────────────┘ */
+@theme inline {
+  /* ── Typography ──────────────────────────────────────────────────────────── */
+  /* Apply via `font-brand` on user-facing layout roots (EndUserView)
+     only — do NOT use in admin or studio components. */
+  --font-brand: var(--brand-font, Inter, 'Open Sans', 'Helvetica Neue', sans-serif);
+
+  /* ── Core palette ─────────────────────────────────────────────────────────── */
+  --color-brand-primary: var(--brand-color-primary, #1B2559);
+  --color-brand-secondary: var(--brand-color-secondary, #171719);
+  --color-brand-grey-bright: var(--brand-color-grey-bright, #E6E6E6);
+  --color-brand-grey-dark: var(--brand-color-grey-dark, #707070);
+  --color-brand-link: var(--brand-color-link, #0052CC);
+  --color-brand-link-hover: var(--brand-color-link-hover, #003D99);
+
+  /* ── Surfaces & neutrals ──────────────────────────────────────────────────── */
+  --color-brand-surface: var(--brand-color-surface, #F4F5F7);
+  --color-brand-border: var(--brand-color-border, #E2E4E8);
+  --color-brand-accent: var(--brand-color-accent, #5E6C84);
+  --color-brand-accent-text: var(--brand-color-accent-text, #FFFFFF);
+
+  /* ── Text tones ───────────────────────────────────────────────────────────── */
+  --color-brand-muted: var(--brand-color-muted, #6B778C);
+
+  /* ── Semantic status ──────────────────────────────────────────────────────── */
+  --color-brand-info: var(--brand-color-info, #0065FF);
+  --color-brand-success: var(--brand-color-success, #00875A);
+  --color-brand-warning: var(--brand-color-warning, #FF991F);
+  --color-brand-danger: var(--brand-color-danger, #DE350B);
+}

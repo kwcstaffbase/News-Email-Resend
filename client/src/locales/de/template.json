@@ -1,0 +1,14 @@
+{
+  "placeholder": {
+    "user-title": "Endbenutzeransicht — hier beginnen",
+    "user-body": "Ersetze diesen Platzhalter in client/src/pages/EndUserView.tsx durch deine Endbenutzer-Oberfläche."
+  },
+  "error-boundary": {
+    "title": "Etwas ist schiefgelaufen.",
+    "reload": "Neu laden"
+  },
+  "session": {
+    "expired-title": "Sitzung abgelaufen",
+    "expired-body": "Deine Sitzung ist abgelaufen. Bitte lade die Seite neu, um fortzufahren."
+  }
+}

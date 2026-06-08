@@ -1,0 +1,52 @@
+/* Force a solid light background on every Mermaid diagram so dark host themes
+   (e.g. Backstage TechDocs in dark mode) don't render white-on-white text.
+   Pairs with the `%%{init: {'theme':'base', ...}}%%` directive at the top of
+   each ```mermaid block, which sets explicit colours inside the SVG itself.
+
+   `pymdownx.superfences` with `fence_code_format` wraps each block in
+   `<pre class="mermaid"><code>…</code></pre>`. Backstage TechDocs uses that
+   exact shape. We target every common form (`pre.mermaid`, `div.mermaid`,
+   `code.mermaid`) so the styling survives any future fence-format flip. */
+pre.mermaid,
+div.mermaid,
+code.mermaid {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #d7dbe1;
+  margin: 16px 0;
+  display: block;
+  text-align: center;
+  /* hide the raw source line that briefly flashes before mermaid.js renders */
+  white-space: normal;
+}
+
+/* `<pre class="mermaid">` wraps a `<code>` — the inner element inherits a
+   default monospace font; reset it so the original code is hidden cleanly
+   before mermaid replaces it with the SVG. */
+pre.mermaid > code,
+div.mermaid > code {
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+}
+
+pre.mermaid svg,
+div.mermaid svg {
+  background: #ffffff;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make sure no inherited dark-theme text colour leaks into the SVG. */
+pre.mermaid svg text,
+pre.mermaid svg .label,
+pre.mermaid svg .nodeLabel,
+pre.mermaid svg .edgeLabel,
+div.mermaid svg text,
+div.mermaid svg .label,
+div.mermaid svg .nodeLabel,
+div.mermaid svg .edgeLabel {
+  color: #1c1f23 !important;
+  fill: #1c1f23 !important;
+}

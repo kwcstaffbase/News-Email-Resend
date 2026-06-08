@@ -1,0 +1,31 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: cc-custom-plugin-template-postgres
+  description: PostgreSQL database for Plugin Template
+spec:
+  type: database
+  owner: cs-tech
+  lifecycle: production
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: cc-custom-plugin-template
+  title: Plugin Template
+  description: Starter template for Staffbase custom plugins (SSO + GDPR + audit log + settings)
+  annotations:
+    github.com/project-slug: Staffbase/cc-custom-plugin-template
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: service
+  lifecycle: production
+  owner: cs-tech
+  consumesApis:
+    - users-api
+    - plugin-installations-api
+  dependsOn:
+    - component:users
+    - resource:cc-custom-plugin-template-postgres

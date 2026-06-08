@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    // Required for TypeScript project references — lets client/tsconfig.json reference this file
+    // so the IDE type-checks vite.config.ts separately from the React app source code
+    "composite": true,
+    // Skip type-checking node_modules .d.ts files — speeds up incremental builds
+    "skipLibCheck": true,
+    // ESNext modules — Vite reads its own config file using native ESM
+    "module": "ESNext",
+    // "bundler" resolution lets Vite resolve package.json exports fields in plugin imports
+    "moduleResolution": "bundler",
+    // Needed for importing CJS default exports in vite.config.ts (some Vite plugins use CJS)
+    "allowSyntheticDefaultImports": true,
+    // Full strict type checking on the build config file itself
+    "strict": true,
+    // Provides Node.js built-in types used in vite.config.ts: path, url (fileURLToPath), process
+    "types": ["node"]
+  },
+  // This tsconfig scopes exclusively to vite.config.ts — the React app uses client/tsconfig.json
+  "include": ["vite.config.ts"]
+}
