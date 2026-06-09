@@ -24,9 +24,11 @@
       --warning-text: #854d0e;
       --danger: #dc2626;
       --danger-bg: #fef2f2;
+      --orange: #ea580c;
+      --orange-bg: #fff7ed;
       --radius: 8px;
       --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,.12);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,.14);
     }
 
     body {
@@ -50,9 +52,11 @@
       position: sticky;
       top: 0;
       z-index: 10;
+      gap: 16px;
     }
-    .app-header h1 { font-size: 16px; font-weight: 600; }
-    .app-main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    .app-header h1 { font-size: 16px; font-weight: 600; white-space: nowrap; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .app-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
     /* ── Cards ── */
     .card {
@@ -62,13 +66,15 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+    .card + .card { margin-top: 20px; }
     .card-header {
-      padding: 16px 20px;
+      padding: 14px 20px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      flex-wrap: wrap;
     }
     .card-header h2 { font-size: 14px; font-weight: 600; }
     .card-body { padding: 20px; }
@@ -84,6 +90,9 @@
       padding: 7px 14px;
       transition: background 0.15s, opacity 0.15s;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-primary { background: var(--primary); color: var(--primary-text); }
@@ -94,95 +103,113 @@
       border: 1px solid var(--border-strong);
     }
     .btn-secondary:hover:not(:disabled) { background: var(--bg); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--primary);
-      padding: 5px 10px;
-    }
+    .btn-ghost { background: transparent; color: var(--primary); padding: 5px 10px; }
     .btn-ghost:hover:not(:disabled) { background: #f3e8ff; }
     .btn-sm { padding: 5px 10px; font-size: 12px; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-danger:hover:not(:disabled) { background: #b91c1c; }
 
     /* ── Form elements ── */
     .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .field label {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
     input[type="text"], input[type="url"], input[type="password"] {
-      font-family: inherit;
-      font-size: 13px;
+      font-family: inherit; font-size: 13px;
       padding: 8px 12px;
       border: 1px solid var(--border-strong);
-      border-radius: 6px;
-      outline: none;
-      width: 100%;
+      border-radius: 6px; outline: none; width: 100%;
       transition: border-color 0.15s;
-      background: var(--surface);
-      color: var(--text);
+      background: var(--surface); color: var(--text);
     }
     input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
 
     /* ── Credentials panel ── */
-    .creds-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text-secondary);
-      user-select: none;
+    .creds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
     }
-    .creds-toggle:hover { color: var(--text); }
-    .creds-badge {
-      display: inline-block;
+    .creds-dot {
       width: 8px; height: 8px;
       border-radius: 50%;
       background: var(--danger);
+      flex-shrink: 0;
     }
-    .creds-badge.ok { background: var(--success); }
-    .creds-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
+    .creds-dot.ok { background: var(--success); }
+
+    /* ── Summary stats bar ── */
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      flex-wrap: wrap;
     }
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+    .stat-val { font-size: 22px; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-val.danger { color: var(--danger); }
+    .stat-val.success { color: var(--success); }
 
     /* ── Table ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead th {
-      text-align: left;
-      padding: 10px 16px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
+      text-align: left; padding: 10px 16px;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-secondary); border-bottom: 1px solid var(--border);
+      white-space: nowrap; background: #fafafa;
     }
+    thead th.sortable { cursor: pointer; user-select: none; }
+    thead th.sortable:hover { color: var(--text); }
+    thead th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+    thead th.sorted .sort-arrow { opacity: 1; }
     tbody tr { border-bottom: 1px solid var(--border); }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #fafafa; }
-    td { padding: 12px 16px; vertical-align: middle; }
-    .td-actions { display: flex; gap: 8px; align-items: center; }
+    td { padding: 11px 16px; vertical-align: middle; }
+    .td-actions { display: flex; gap: 6px; align-items: center; }
 
-    /* ── Badges / pills ── */
+    /* ── Pills ── */
     .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 99px;
-      font-size: 11px;
-      font-weight: 600;
+      display: inline-block; padding: 2px 8px;
+      border-radius: 99px; font-size: 11px; font-weight: 600;
     }
-    .pill-green { background: var(--success-bg); color: var(--success); }
-    .pill-grey { background: #f1f5f9; color: var(--text-secondary); }
+    .pill-green  { background: var(--success-bg); color: var(--success); }
+    .pill-grey   { background: #f1f5f9; color: var(--text-secondary); }
+    .pill-orange { background: var(--orange-bg); color: var(--orange); }
+    .pill-red    { background: var(--danger-bg); color: var(--danger); }
 
-    /* ── Empty / loading states ── */
-    .empty {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--text-secondary);
+    /* ── Not-acknowledged count ── */
+    .not-ack-count {
+      font-weight: 700;
+      font-size: 15px;
     }
-    .empty p:first-child { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
+    .not-ack-count.zero { color: var(--success); }
+    .not-ack-count.low  { color: var(--orange); }
+    .not-ack-count.high { color: var(--danger); }
+    .ack-fraction { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    /* ── Channel chips ── */
+    .channel-chip {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 4px; font-size: 11px;
+      background: #ede9fe; color: #6d28d9;
+      font-weight: 500; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    /* ── Empty / loading ── */
+    .empty {
+      text-align: center; padding: 56px 24px; color: var(--text-secondary);
+    }
+    .empty-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
     .spinner {
       width: 20px; height: 20px;
       border: 2px solid var(--border);
@@ -195,117 +222,69 @@
 
     /* ── Toast ── */
     #toast-container {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 1000;
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 8px; z-index: 1000;
     }
     .toast {
-      background: var(--text);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      max-width: 340px;
+      background: var(--text); color: #fff;
+      padding: 10px 16px; border-radius: 8px;
+      font-size: 13px; max-width: 340px;
       box-shadow: var(--shadow-lg);
       animation: slide-in 0.2s ease;
     }
     .toast.success { background: var(--success); }
-    .toast.error { background: var(--danger); }
+    .toast.error   { background: var(--danger); }
     @keyframes slide-in { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     /* ── Modal ── */
     .modal-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.4);
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
       display: flex; align-items: center; justify-content: center;
-      z-index: 100;
-      padding: 16px;
+      z-index: 100; padding: 16px;
     }
     .modal-backdrop.hidden { display: none; }
     .modal {
-      background: var(--surface);
-      border-radius: var(--radius);
-      width: 100%;
-      max-width: 560px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
+      background: var(--surface); border-radius: var(--radius);
+      width: 100%; max-width: 560px; max-height: 90vh;
+      display: flex; flex-direction: column;
       box-shadow: var(--shadow-lg);
     }
-    .modal-header {
-      padding: 20px 24px 16px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+    .modal-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .modal-header h2 { font-size: 15px; font-weight: 600; }
-    .modal-header p { font-size: 12px; color: var(--text-secondary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .modal-progress {
-      padding: 12px 24px;
-      border-bottom: 1px solid var(--border);
-      background: #fafafa;
-      flex-shrink: 0;
-    }
+    .modal-header p  { font-size: 12px; color: var(--text-secondary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modal-progress  { padding: 12px 24px; border-bottom: 1px solid var(--border); background: #fafafa; flex-shrink: 0; }
     .modal-progress p { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
-    .progress-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-bar  { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width 0.3s; }
-    .modal-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+    .modal-tabs    { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .tab-btn {
       flex: 1; padding: 10px 16px;
       font-size: 13px; font-weight: 500;
       background: none; border: none; border-radius: 0;
       border-bottom: 2px solid transparent;
-      cursor: pointer;
-      color: var(--text-secondary);
+      cursor: pointer; color: var(--text-secondary);
       transition: color 0.15s, border-color 0.15s;
     }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .tab-btn:hover:not(.active) { color: var(--text); }
-    .modal-body { flex: 1; overflow-y: auto; min-height: 0; }
-    .user-list { list-style: none; }
-    .user-item {
-      display: flex; align-items: center;
-      padding: 10px 24px;
-      border-bottom: 1px solid var(--border);
-    }
+    .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg); }
+    .modal-body   { flex: 1; overflow-y: auto; min-height: 0; }
+    .user-item    { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); }
     .user-item:last-child { border-bottom: none; }
-    .user-info { min-width: 0; flex: 1; }
-    .user-name { font-weight: 500; font-size: 13px; }
-    .user-email { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-no-email { font-size: 12px; color: var(--text-disabled); font-style: italic; }
-    .modal-footer {
-      padding: 14px 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      flex-shrink: 0;
-    }
+    .user-info    { min-width: 0; flex: 1; }
+    .user-name    { font-weight: 500; font-size: 13px; }
+    .user-email   { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-no-email{ font-size: 12px; color: var(--text-disabled); font-style: italic; }
+    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
 
-    /* ── Progress bar in header ── */
-    .channel-row {
-      display: flex; gap: 10px; align-items: flex-end;
+    /* ── Toolbar ── */
+    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-input {
+      padding: 7px 12px; border: 1px solid var(--border-strong);
+      border-radius: 6px; font-size: 13px; font-family: inherit;
+      outline: none; width: 220px; background: var(--surface); color: var(--text);
     }
-    .channel-row .field { flex: 1; }
-    .section-gap { margin-top: 20px; }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
 
-    /* ── Alert ── */
-    .alert {
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
-    .alert-warning { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #fde68a; }
-
-    /* ── Collapsible ── */
     details > summary { list-style: none; }
     details > summary::-webkit-details-marker { display: none; }
   </style>
@@ -314,99 +293,103 @@
 
 <header class="app-header">
   <h1>📰 News Acknowledgement Tracker</h1>
-  <span id="creds-status-badge" class="creds-toggle" onclick="document.getElementById('creds-details').open = !document.getElementById('creds-details').open">
-    <span class="creds-badge" id="creds-dot"></span>
-    <span id="creds-label">Settings</span>
-  </span>
+  <div class="header-right">
+    <span id="creds-status" style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;">
+      <span class="creds-dot" id="creds-dot"></span>
+      <span id="creds-label">Not configured</span>
+    </span>
+    <button class="btn-secondary btn-sm" onclick="toggleCredsPanel()">⚙ Settings</button>
+  </div>
 </header>
 
 <main class="app-main">
 
-  <!-- Credentials card -->
-  <div class="card" style="margin-bottom: 20px;">
-    <details id="creds-details">
-      <summary>
-        <div class="card-header" style="cursor:pointer;">
-          <h2>⚙️ Credentials</h2>
-          <span style="font-size:12px;color:var(--text-secondary)">Click to expand</span>
+  <!-- Credentials card (hidden by default once configured) -->
+  <div class="card" id="creds-card" style="margin-bottom:20px;">
+    <div class="card-header">
+      <h2>Credentials</h2>
+      <button class="btn-ghost btn-sm" id="creds-close-btn" onclick="toggleCredsPanel()" style="display:none;">✕ Close</button>
+    </div>
+    <div class="card-body">
+      <div class="creds-grid">
+        <div class="field">
+          <label for="input-url">Staffbase Instance URL</label>
+          <input type="url" id="input-url" placeholder="https://yourco.staffbase.com" autocomplete="off" />
         </div>
-      </summary>
-      <div class="card-body">
-        <div class="creds-grid">
-          <div class="field">
-            <label for="input-url">Staffbase Instance URL</label>
-            <input type="url" id="input-url" placeholder="https://yourco.staffbase.com" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="input-token">API Token <span style="font-weight:400;text-transform:none;letter-spacing:0">(Basic auth, base64)</span></label>
-            <input type="password" id="input-token" placeholder="btoa('installations/…:secret')" autocomplete="new-password" />
-          </div>
-          <div class="field">
-            <label for="input-email-url">Email Service URL</label>
-            <input type="url" id="input-email-url" placeholder="https://email-service.example.com/api/emails" autocomplete="off" />
-          </div>
+        <div class="field">
+          <label for="input-token">API Token <span style="font-weight:400;text-transform:none;letter-spacing:0">(Basic auth, base64)</span></label>
+          <input type="password" id="input-token" placeholder="base64 encoded token" autocomplete="new-password" />
         </div>
-        <div style="margin-top:16px;display:flex;gap:10px;">
-          <button class="btn-primary" onclick="saveCredentials()">Save credentials</button>
-          <button class="btn-secondary" onclick="clearCredentials()">Clear</button>
+        <div class="field">
+          <label for="input-email-url">Email Service URL</label>
+          <input type="url" id="input-email-url" placeholder="https://email-service.example.com/api/emails" autocomplete="off" />
         </div>
-        <p style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
-          Credentials are stored in <code>sessionStorage</code> and cleared when you close this tab.
-        </p>
       </div>
-    </details>
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveAndDiscover()">Save &amp; Discover Channels</button>
+        <button class="btn-secondary" onclick="clearCredentials()">Clear</button>
+        <span style="font-size:12px;color:var(--text-secondary);">Stored in <code>sessionStorage</code> — cleared when you close this tab.</span>
+      </div>
+    </div>
   </div>
 
   <!-- Posts card -->
-  <div class="card">
+  <div class="card" id="posts-card" style="display:none;">
     <div class="card-header">
-      <h2>Posts</h2>
-    </div>
-    <div class="card-body" style="padding-bottom:12px;">
-      <div id="no-creds-alert" class="alert alert-warning" style="display:none;">
-        ⚠️ Configure your Staffbase credentials above before loading posts.
+      <h2 id="posts-card-title">All Posts</h2>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="search-input" placeholder="Search posts…"
+          oninput="filterPosts()" />
+        <button class="btn-secondary btn-sm" onclick="saveAndDiscover()">⟳ Refresh</button>
       </div>
-      <div class="channel-row">
-        <div class="field">
-          <label for="input-channel">Channel ID</label>
-          <input type="text" id="input-channel" placeholder="62dae31dae96d800cb1eaac1" autocomplete="off"
-            onkeydown="if(event.key==='Enter') loadPosts()" />
-        </div>
-        <button class="btn-primary" id="load-btn" onclick="loadPosts()">Load Posts</button>
+    </div>
+
+    <!-- Summary stats -->
+    <div class="stats-bar" id="stats-bar" style="display:none;">
+      <div class="stat">
+        <span class="stat-val" id="stat-total-posts">—</span>
+        <span class="stat-label">Posts</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-channels">—</span>
+        <span class="stat-label">Channels</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val danger" id="stat-not-acked">—</span>
+        <span class="stat-label">Total unread</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-no-ack-enabled">—</span>
+        <span class="stat-label">Acknowledging disabled</span>
       </div>
     </div>
 
     <div id="posts-area">
       <div class="empty">
-        <p>No posts loaded</p>
-        <p>Enter a channel ID above and click Load Posts.</p>
+        <div class="spinner"></div>
+        <p class="empty-title" style="margin-top:12px;">Loading…</p>
       </div>
     </div>
   </div>
 
 </main>
 
-<!-- Acknowledgement modal -->
-<div class="modal-backdrop hidden" id="ack-modal" onclick="closeModal(event)">
+<!-- Acknowledgement detail modal -->
+<div class="modal-backdrop hidden" id="ack-modal" onclick="maybeCloseModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-header">
       <h2>Acknowledgement Status</h2>
       <p id="modal-post-title">—</p>
     </div>
-
     <div id="modal-progress-bar" class="modal-progress" style="display:none;">
       <p id="modal-progress-text"></p>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     </div>
-
     <div id="modal-loading" class="empty" style="padding:32px;">
       <div class="spinner"></div>
       <p style="margin-top:12px;">Loading acknowledgement data…</p>
     </div>
-
-    <div id="modal-content" style="display:none; flex-direction:column; flex:1; min-height:0;">
+    <div id="modal-content" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div class="modal-tabs">
         <button class="tab-btn active" id="tab-unread" onclick="switchTab('unread')">
           Not acknowledged (<span id="unread-count">0</span>)
@@ -416,11 +399,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <ul class="user-list" id="unread-list"></ul>
-        <ul class="user-list" id="read-list" style="display:none;"></ul>
+        <ul id="unread-list" style="list-style:none;"></ul>
+        <ul id="read-list"   style="list-style:none;display:none;"></ul>
       </div>
     </div>
-
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">Close</button>
       <button class="btn-primary" id="send-btn" style="display:none;" onclick="sendReminders()">
@@ -433,13 +415,15 @@
 <div id="toast-container"></div>
 
 <script>
-// ── State ─────────────────────────────────────────────────────────────────
+// ── State ────────────────────────────────────────────────────────────────
 
 let creds = { url: "", token: "", emailUrl: "" };
-let currentStatus = null;   // last loaded AcknowledgementStatus
-let activeTab = "unread";
+let allPosts    = [];   // full merged list
+let filteredPosts = []; // after search filter
+let channelMap  = {};   // channelId → { name, approximateRecipients }
+let currentStatus = null;
 
-// ── Credentials ───────────────────────────────────────────────────────────
+// ── Credentials ──────────────────────────────────────────────────────────
 
 function loadCredentialsFromStorage() {
   creds.url      = sessionStorage.getItem("sb_url") ?? "";
@@ -455,109 +439,211 @@ function saveCredentials() {
   creds.url      = document.getElementById("input-url").value.trim();
   creds.token    = document.getElementById("input-token").value.trim();
   creds.emailUrl = document.getElementById("input-email-url").value.trim();
-  sessionStorage.setItem("sb_url",      creds.url);
-  sessionStorage.setItem("sb_token",    creds.token);
+  sessionStorage.setItem("sb_url",       creds.url);
+  sessionStorage.setItem("sb_token",     creds.token);
   sessionStorage.setItem("sb_email_url", creds.emailUrl);
   updateCredsBadge();
-  document.getElementById("creds-details").open = false;
-  toast("Credentials saved for this session.", "success");
 }
 
 function clearCredentials() {
-  ["sb_url", "sb_token", "sb_email_url"].forEach((k) => sessionStorage.removeItem(k));
+  ["sb_url","sb_token","sb_email_url"].forEach(k => sessionStorage.removeItem(k));
   creds = { url: "", token: "", emailUrl: "" };
-  document.getElementById("input-url").value = "";
-  document.getElementById("input-token").value = "";
-  document.getElementById("input-email-url").value = "";
+  ["input-url","input-token","input-email-url"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
   updateCredsBadge();
+  allPosts = []; filteredPosts = []; channelMap = {};
+  document.getElementById("posts-card").style.display = "none";
   toast("Credentials cleared.");
 }
 
 function updateCredsBadge() {
   const ok = Boolean(creds.url && creds.token);
-  document.getElementById("creds-dot").className = "creds-badge" + (ok ? " ok" : "");
-  document.getElementById("creds-label").textContent = ok ? "Credentials configured" : "Credentials required";
-  document.getElementById("no-creds-alert").style.display = ok ? "none" : "block";
+  document.getElementById("creds-dot").className   = "creds-dot" + (ok ? " ok" : "");
+  document.getElementById("creds-label").textContent = ok ? "Credentials configured" : "Not configured";
 }
 
-function credHeaders() {
-  const h = {
+function toggleCredsPanel() {
+  const card = document.getElementById("creds-card");
+  const closeBtn = document.getElementById("creds-close-btn");
+  const isHidden = card.style.display === "none";
+  card.style.display = isHidden ? "block" : "none";
+  card.style.marginBottom = isHidden ? "20px" : "0";
+  closeBtn.style.display = isHidden ? "inline-flex" : "none";
+}
+
+function credHeaders(extra) {
+  return {
     "Content-Type": "application/json",
-    "x-staffbase-url": creds.url,
+    "x-staffbase-url":   creds.url,
     "x-staffbase-token": creds.token,
+    ...(creds.emailUrl ? { "x-email-service-url": creds.emailUrl } : {}),
+    ...(extra ?? {}),
   };
-  if (creds.emailUrl) h["x-email-service-url"] = creds.emailUrl;
-  return h;
 }
 
-// ── Posts ─────────────────────────────────────────────────────────────────
+// ── Discovery + load ─────────────────────────────────────────────────────
 
-async function loadPosts() {
-  const channelId = document.getElementById("input-channel").value.trim();
-  if (!channelId) { toast("Enter a channel ID.", "error"); return; }
+async function saveAndDiscover() {
+  saveCredentials();
   if (!creds.url || !creds.token) {
-    document.getElementById("creds-details").open = true;
-    toast("Configure credentials first.", "error");
+    toast("Enter your Staffbase URL and API token first.", "error");
     return;
   }
 
-  const btn = document.getElementById("load-btn");
-  btn.disabled = true;
-  btn.textContent = "Loading…";
-  setPostsArea(loadingHTML("Loading posts…"));
+  document.getElementById("creds-card").style.display = "none";
+  document.getElementById("posts-card").style.display = "block";
+  document.getElementById("stats-bar").style.display  = "none";
+  setPostsArea(loadingHTML("Discovering news channels…"));
 
+  // 1. Discover channels
+  let channels;
   try {
-    const res = await fetch(`/api/posts?channelId=${encodeURIComponent(channelId)}&limit=50`, {
-      headers: credHeaders(),
-    });
+    const res = await fetch("/api/channels", { headers: credHeaders() });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    channels = data.channels ?? [];
+  } catch (err) {
+    setPostsArea(emptyHTML("Channel discovery failed", err.message +
+      " — check that your API token has branch-level read access."));
+    toast(err.message, "error");
+    return;
+  }
 
-    const posts = data.data ?? [];
-    if (posts.length === 0) {
-      setPostsArea(emptyHTML("No posts found", "This channel has no posts, or the channel ID is incorrect."));
-    } else {
-      renderPostsTable(posts);
-    }
+  if (channels.length === 0) {
+    setPostsArea(emptyHTML("No news channels found", "No news channel installations were returned by the API."));
+    return;
+  }
+
+  // Build channelMap
+  channelMap = {};
+  for (const ch of channels) channelMap[ch.id] = ch;
+
+  const channelIds  = channels.map(c => c.id).join(",");
+  const channelNames = Object.fromEntries(channels.map(c => [c.id, c.name]));
+
+  setPostsArea(loadingHTML(`Loading posts from ${channels.length} channel(s)…`));
+
+  // 2. Fetch all posts
+  try {
+    const res = await fetch(
+      `/api/all-posts?channelIds=${encodeURIComponent(channelIds)}&limit=50`,
+      { headers: credHeaders({ "x-channel-names": JSON.stringify(channelNames) }) }
+    );
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    allPosts = data.posts ?? [];
   } catch (err) {
     setPostsArea(emptyHTML("Failed to load posts", err.message));
     toast(err.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Load Posts";
+    return;
   }
+
+  document.getElementById("posts-card-title").textContent =
+    `All Posts (${channels.length} channel${channels.length !== 1 ? "s" : ""})`;
+
+  applyFilter();
+  renderStats();
 }
 
-function renderPostsTable(posts) {
-  const rows = posts.map((post) => {
-    const title = getPostTitle(post);
-    const published = post.published ?? post.planned;
-    const ackCount = post.acknowledgements?.total ?? 0;
+// ── Render ────────────────────────────────────────────────────────────────
+
+function filterPosts() {
+  applyFilter();
+}
+
+function applyFilter() {
+  const q = (document.getElementById("search-input").value ?? "").toLowerCase().trim();
+  filteredPosts = q
+    ? allPosts.filter(p => {
+        const title = getPostTitle(p).toLowerCase();
+        const ch    = (p.channelName ?? "").toLowerCase();
+        return title.includes(q) || ch.includes(q);
+      })
+    : allPosts;
+  renderTable();
+}
+
+function renderStats() {
+  const total     = allPosts.length;
+  const channels  = new Set(allPosts.map(p => p.channelId)).size;
+  const noAckEnabled = allPosts.filter(p => !p.acknowledgingEnabled).length;
+
+  // Total "not acknowledged" — only for posts where we have recipient data
+  let totalNotAcked = 0;
+  for (const post of allPosts) {
+    if (!post.acknowledgingEnabled) continue;
+    const ch = channelMap[post.channelId];
+    if (!ch) continue;
+    const acked   = post.acknowledgements?.total ?? 0;
+    const notAcked = Math.max(0, ch.approximateRecipients - acked);
+    totalNotAcked += notAcked;
+  }
+
+  document.getElementById("stat-total-posts").textContent  = total;
+  document.getElementById("stat-channels").textContent     = channels;
+  document.getElementById("stat-not-acked").textContent    = totalNotAcked;
+  document.getElementById("stat-no-ack-enabled").textContent = noAckEnabled;
+  document.getElementById("stats-bar").style.display       = "flex";
+}
+
+function renderTable() {
+  if (filteredPosts.length === 0) {
+    const msg = allPosts.length === 0
+      ? ["No posts found", "No posts were returned from any channel."]
+      : ["No matching posts", "Try a different search term."];
+    setPostsArea(emptyHTML(...msg));
+    return;
+  }
+
+  const rows = filteredPosts.map(post => {
+    const title      = getPostTitle(post);
+    const published  = post.published ?? post.planned;
+    const ackCount   = post.acknowledgements?.total ?? 0;
     const ackEnabled = post.acknowledgingEnabled ?? false;
-    const postUrl = post.links?.detail_view?.href;
+    const postUrl    = post.links?.detail_view?.href;
+    const ch         = channelMap[post.channelId];
+
+    // Not-acknowledged count
+    let notAckedHtml = '<span style="color:var(--text-disabled)">—</span>';
+    if (ackEnabled && ch && ch.approximateRecipients > 0) {
+      const notAcked = Math.max(0, ch.approximateRecipients - ackCount);
+      const pct      = Math.round((ackCount / ch.approximateRecipients) * 100);
+      const cls      = notAcked === 0 ? "zero" : notAcked <= 3 ? "low" : "high";
+      notAckedHtml   = `
+        <div class="not-ack-count ${cls}">${notAcked}</div>
+        <div class="ack-fraction">~${pct}% read</div>`;
+    } else if (!ackEnabled) {
+      notAckedHtml = '<span class="pill pill-grey" style="font-size:11px;">N/A</span>';
+    }
 
     const enableBtn = ackEnabled
       ? ""
-      : `<button class="btn-ghost btn-sm" onclick="enableAcknowledging('${esc(post.id)}', this)">Enable acknowledging</button>`;
+      : `<button class="btn-ghost btn-sm" onclick="enableAcknowledging('${esc(post.id)}', this)">Enable</button>`;
 
     const viewBtn = ackEnabled
-      ? `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(post.id)}', ${JSON.stringify(title).replace(/"/g, "&quot;")})">View status</button>`
+      ? `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(post.id)}', ${JSON.stringify(title).replace(/"/g,"&quot;")})">Details</button>`
       : "";
 
     const externalLink = postUrl
       ? `<a href="${esc(postUrl)}" target="_blank" rel="noopener noreferrer"
-           style="font-size:11px;color:var(--primary);margin-left:6px;text-decoration:none;">↗</a>`
+           title="Open post" style="color:var(--primary);text-decoration:none;font-size:14px;">↗</a>`
       : "";
 
     return `<tr>
       <td>
-        <span style="font-weight:500;">${esc(title)}</span>${externalLink}
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-weight:500;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;">${esc(title)}</span>
+          ${externalLink}
+        </div>
       </td>
-      <td style="color:var(--text-secondary);white-space:nowrap;">${published ? fmtDate(published) : "—"}</td>
+      <td><span class="channel-chip" title="${esc(post.channelName ?? post.channelId)}">${esc(post.channelName ?? post.channelId)}</span></td>
+      <td style="white-space:nowrap;color:var(--text-secondary);font-size:12px;">${published ? fmtDate(published) : "—"}</td>
       <td style="font-weight:600;">${ackCount}</td>
+      <td>${notAckedHtml}</td>
       <td>${ackEnabled
-        ? '<span class="pill pill-green">Enabled</span>'
-        : '<span class="pill pill-grey">Disabled</span>'}</td>
+        ? '<span class="pill pill-green">On</span>'
+        : '<span class="pill pill-grey">Off</span>'}</td>
       <td><div class="td-actions">${enableBtn}${viewBtn}</div></td>
     </tr>`;
   }).join("");
@@ -568,8 +654,10 @@ function renderPostsTable(posts) {
         <thead>
           <tr>
             <th>Post Title</th>
+            <th>Channel</th>
             <th>Published</th>
             <th>Acknowledged</th>
+            <th>Not Acknowledged <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;">(approx)</span></th>
             <th>Acknowledging</th>
             <th>Actions</th>
           </tr>
@@ -577,10 +665,6 @@ function renderPostsTable(posts) {
         <tbody>${rows}</tbody>
       </table>
     </div>`);
-}
-
-function setPostsArea(html) {
-  document.getElementById("posts-area").innerHTML = html;
 }
 
 // ── Enable acknowledging ──────────────────────────────────────────────────
@@ -596,13 +680,16 @@ async function enableAcknowledging(postId, btn) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-    toast("Acknowledging enabled. Reload posts to see the updated status.", "success");
-    // Refresh posts
-    setTimeout(loadPosts, 800);
+    toast("Acknowledging enabled. Refreshing…", "success");
+    // Optimistically flip the flag locally
+    const post = allPosts.find(p => p.id === postId);
+    if (post) post.acknowledgingEnabled = true;
+    applyFilter();
+    renderStats();
   } catch (err) {
     toast(err.message, "error");
     btn.disabled = false;
-    btn.textContent = "Enable acknowledging";
+    btn.textContent = "Enable";
   }
 }
 
@@ -611,11 +698,8 @@ async function enableAcknowledging(postId, btn) {
 async function viewStatus(postId, postTitle) {
   currentStatus = null;
   openModal(postTitle);
-
   try {
-    const res = await fetch(`/api/ack-status?postId=${encodeURIComponent(postId)}`, {
-      headers: credHeaders(),
-    });
+    const res  = await fetch(`/api/ack-status?postId=${encodeURIComponent(postId)}`, { headers: credHeaders() });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
     currentStatus = data;
@@ -630,78 +714,61 @@ async function viewStatus(postId, postTitle) {
 
 function openModal(postTitle) {
   document.getElementById("modal-post-title").textContent = postTitle;
-  document.getElementById("modal-loading").style.display = "block";
-  document.getElementById("modal-content").style.display = "none";
+  document.getElementById("modal-loading").style.display  = "block";
+  document.getElementById("modal-loading").innerHTML = `<div class="spinner"></div><p style="margin-top:12px;">Loading acknowledgement data…</p>`;
+  document.getElementById("modal-content").style.display  = "none";
   document.getElementById("modal-progress-bar").style.display = "none";
-  document.getElementById("send-btn").style.display = "none";
+  document.getElementById("send-btn").style.display       = "none";
   document.getElementById("ack-modal").classList.remove("hidden");
-  activeTab = "unread";
-  document.getElementById("tab-unread").classList.add("active");
-  document.getElementById("tab-read").classList.remove("active");
+  switchTab("unread");
 }
 
 function renderModalContent(status) {
-  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients, postTitle } = status;
-
-  // Progress bar
+  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients } = status;
   const pct = totalRecipients > 0 ? Math.round((read.length / totalRecipients) * 100) : 0;
+
   document.getElementById("modal-progress-bar").style.display = "block";
-  document.getElementById("modal-progress-text").textContent =
-    `${read.length} of ${totalRecipients} recipients have acknowledged`;
+  document.getElementById("modal-progress-text").textContent  =
+    `${read.length} of ${totalRecipients} recipients acknowledged (${pct}%)`;
   document.getElementById("progress-fill").style.width = `${pct}%`;
 
-  // Counts
   document.getElementById("unread-count").textContent = unread.length;
-  document.getElementById("read-count").textContent = read.length;
+  document.getElementById("read-count").textContent   = read.length;
+  document.getElementById("unread-list").innerHTML    = renderUserList(unread, true);
+  document.getElementById("read-list").innerHTML      = renderUserList(read, false);
 
-  // User lists
-  document.getElementById("unread-list").innerHTML = renderUserList(unread, true);
-  document.getElementById("read-list").innerHTML = renderUserList(read, false);
-
-  // Send button
   if (unread.length > 0) {
-    document.getElementById("send-btn").style.display = "inline-block";
+    document.getElementById("send-btn").style.display = "inline-flex";
     document.getElementById("send-count").textContent = unread.length;
   }
 
-  document.getElementById("modal-loading").style.display = "none";
-  document.getElementById("modal-content").style.display = "flex";
+  document.getElementById("modal-loading").style.display  = "none";
+  document.getElementById("modal-content").style.display  = "flex";
 }
 
 function renderUserList(users, showNoEmail) {
   if (users.length === 0) {
-    const msg = showNoEmail
-      ? "Everyone has acknowledged this post! 🎉"
-      : "No acknowledgements yet.";
+    const msg = showNoEmail ? "Everyone has acknowledged! 🎉" : "No acknowledgements yet.";
     return `<li style="padding:32px 24px;text-align:center;color:var(--text-secondary);">${msg}</li>`;
   }
-  return users.map((u) => {
-    const name = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown user";
-    const emailEl = u.email
+  return users.map(u => {
+    const name     = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown user";
+    const emailEl  = u.email
       ? `<div class="user-email">${esc(u.email)}</div>`
-      : (showNoEmail ? `<div class="user-no-email">No email address — will be skipped</div>` : "");
-    return `<li class="user-item">
-      <div class="user-info">
-        <div class="user-name">${esc(name)}</div>
-        ${emailEl}
-      </div>
-    </li>`;
+      : (showNoEmail ? `<div class="user-no-email">No email — will be skipped</div>` : "");
+    return `<li class="user-item"><div class="user-info"><div class="user-name">${esc(name)}</div>${emailEl}</div></li>`;
   }).join("");
 }
 
 function switchTab(tab) {
-  activeTab = tab;
-  document.getElementById("tab-unread").classList.toggle("active", tab === "unread");
-  document.getElementById("tab-read").classList.toggle("active", tab === "read");
-  document.getElementById("unread-list").style.display = tab === "unread" ? "block" : "none";
-  document.getElementById("read-list").style.display = tab === "read" ? "block" : "none";
+  ["unread","read"].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle("active", t === tab);
+    document.getElementById(`${t}-list`).style.display = t === tab ? "block" : "none";
+  });
 }
 
-function closeModal(event) {
-  if (!event || event.target === document.getElementById("ack-modal")) {
-    document.getElementById("ack-modal").classList.add("hidden");
-  }
-}
+function maybeCloseModal(e) { if (e.target === document.getElementById("ack-modal")) closeModal(); }
+function closeModal() { document.getElementById("ack-modal").classList.add("hidden"); }
 
 // ── Send reminders ────────────────────────────────────────────────────────
 
@@ -709,42 +776,37 @@ async function sendReminders() {
   if (!currentStatus) return;
   if (!creds.emailUrl) {
     toast("Email service URL not configured in credentials.", "error");
-    document.getElementById("creds-details").open = true;
+    toggleCredsPanel();
     return;
   }
-
   const btn = document.getElementById("send-btn");
   btn.disabled = true;
   btn.textContent = "Sending…";
-
-  const userIds = currentStatus.notAcknowledgedUsers.map((u) => u.userId);
-
+  const userIds = currentStatus.notAcknowledgedUsers.map(u => u.userId);
   try {
-    const res = await fetch("/api/send-reminder", {
+    const res  = await fetch("/api/send-reminder", {
       method: "POST",
       headers: credHeaders(),
       body: JSON.stringify({
-        postId: currentStatus.postId,
+        postId:    currentStatus.postId,
         postTitle: currentStatus.postTitle,
-        postUrl: currentStatus.postUrl,
+        postUrl:   currentStatus.postUrl,
         userIds,
       }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-
-    if (data.skipped > 0) {
-      toast(`Sent to ${data.sent} recipient(s). ${data.skipped} skipped (no email address).`, "success");
-    } else {
-      toast(`Reminder sent to ${data.sent} recipient(s).`, "success");
-    }
+    toast(
+      data.skipped > 0
+        ? `Sent to ${data.sent}, skipped ${data.skipped} (no email).`
+        : `Reminder sent to ${data.sent} recipient(s).`,
+      "success"
+    );
     closeModal();
   } catch (err) {
     toast(err.message, "error");
   } finally {
     btn.disabled = false;
-    document.getElementById("send-count").textContent =
-      currentStatus?.notAcknowledgedUsers?.length ?? 0;
     btn.textContent = `Send reminder (${document.getElementById("send-count").textContent})`;
   }
 }
@@ -753,8 +815,7 @@ async function sendReminders() {
 
 function getPostTitle(post) {
   if (!post.contents) return post.id;
-  const vals = Object.values(post.contents);
-  return vals.find((l) => l.title)?.title ?? post.id;
+  return Object.values(post.contents).find(l => l?.title)?.title ?? post.id;
 }
 
 function fmtDate(iso) {
@@ -765,37 +826,34 @@ function fmtDate(iso) {
 
 function esc(s) {
   return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+
+function setPostsArea(html) { document.getElementById("posts-area").innerHTML = html; }
 
 function loadingHTML(msg) {
-  return `<div class="empty"><div class="spinner"></div><p style="margin-top:12px;color:var(--text-secondary);">${esc(msg)}</p></div>`;
+  return `<div class="empty"><div class="spinner"></div><p class="empty-title" style="margin-top:12px;">${esc(msg)}</p></div>`;
 }
-
 function emptyHTML(title, body) {
-  return `<div class="empty"><p>${esc(title)}</p><p>${esc(body)}</p></div>`;
+  return `<div class="empty"><p class="empty-title">${esc(title)}</p><p style="margin-top:6px;">${esc(body)}</p></div>`;
 }
-
-// ── Toast ─────────────────────────────────────────────────────────────────
 
 function toast(msg, type = "") {
   const el = document.createElement("div");
   el.className = ["toast", type].filter(Boolean).join(" ");
   el.textContent = msg;
   document.getElementById("toast-container").appendChild(el);
-  setTimeout(() => el.remove(), 4000);
+  setTimeout(() => el.remove(), 4500);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
 
 loadCredentialsFromStorage();
-
-// Open credentials panel on first load if empty
-if (!creds.url || !creds.token) {
-  document.getElementById("creds-details").open = true;
+// Auto-load if credentials are already stored
+if (creds.url && creds.token) {
+  document.getElementById("creds-card").style.display = "none";
+  saveAndDiscover();
 }
 </script>
 </body>
