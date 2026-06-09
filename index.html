@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News Acknowledgement Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text: #0f172a;
+      --text-secondary: #64748b;
+      --text-disabled: #94a3b8;
+      --primary: #6c00ff;
+      --primary-hover: #5800d4;
+      --primary-text: #ffffff;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --orange: #ea580c;
+      --orange-bg: #fff7ed;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-lg: 0 10px 28px rgba(0,0,0,.14);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      gap: 16px;
+    }
+    .app-header h1 { font-size: 16px; font-weight: 600; }
+    .app-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .card-header h2 { font-size: 14px; font-weight: 600; }
+
+    /* ── Buttons ── */
+    button {
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      cursor: pointer; border: none; border-radius: 6px;
+      padding: 7px 14px;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: var(--primary-text); }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-secondary:hover:not(:disabled) { background: var(--bg); }
+    .btn-ghost { background: transparent; color: var(--primary); padding: 5px 10px; }
+    .btn-ghost:hover:not(:disabled) { background: #f3e8ff; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex; gap: 24px;
+      padding: 12px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+    .stat-val { font-size: 22px; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-val.danger  { color: var(--danger); }
+    .stat-val.success { color: var(--success); }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 10px 16px;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap; background: #fafafa;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    td { padding: 11px 16px; vertical-align: middle; }
+    .td-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* ── Chips / pills ── */
+    .pill {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 99px; font-size: 11px; font-weight: 600;
+    }
+    .pill-green  { background: var(--success-bg); color: var(--success); }
+    .pill-grey   { background: #f1f5f9; color: var(--text-secondary); }
+    .channel-chip {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 4px; font-size: 11px;
+      background: #ede9fe; color: #6d28d9; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    /* ── Not-acknowledged count ── */
+    .not-ack { font-weight: 700; font-size: 15px; }
+    .not-ack.zero { color: var(--success); }
+    .not-ack.low  { color: var(--orange); }
+    .not-ack.high { color: var(--danger); }
+    .ack-pct { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+
+    /* ── Empty / loading ── */
+    .empty { text-align: center; padding: 56px 24px; color: var(--text-secondary); }
+    .empty-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error banner ── */
+    .error-banner {
+      margin: 20px; padding: 14px 16px;
+      background: var(--danger-bg);
+      border: 1px solid #fecaca;
+      border-radius: var(--radius);
+      color: var(--danger);
+      font-size: 13px;
+    }
+    .error-banner strong { display: block; margin-bottom: 4px; }
+
+    /* ── Toolbar ── */
+    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-input {
+      padding: 7px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px; font-size: 13px; font-family: inherit;
+      outline: none; width: 220px;
+      background: var(--surface); color: var(--text);
+    }
+    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
+
+    /* ── Toast ── */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 8px; z-index: 1000;
+    }
+    .toast {
+      background: var(--text); color: #fff;
+      padding: 10px 16px; border-radius: 8px;
+      font-size: 13px; max-width: 340px;
+      box-shadow: var(--shadow-lg);
+      animation: slide-in 0.2s ease;
+    }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+    @keyframes slide-in { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ── Modal ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 16px;
+    }
+    .modal-backdrop.hidden { display: none; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius);
+      width: 100%; max-width: 560px; max-height: 90vh;
+      display: flex; flex-direction: column;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .modal-header h2 { font-size: 15px; font-weight: 600; }
+    .modal-header p  { font-size: 12px; color: var(--text-secondary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modal-progress { padding: 12px 24px; border-bottom: 1px solid var(--border); background: #fafafa; flex-shrink: 0; }
+    .modal-progress p { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+    .progress-bar  { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width 0.3s; }
+    .modal-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .tab-btn {
+      flex: 1; padding: 10px 16px;
+      font-size: 13px; font-weight: 500;
+      background: none; border: none; border-radius: 0;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; color: var(--text-secondary);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg); }
+    .modal-body { flex: 1; overflow-y: auto; min-height: 0; }
+    .user-item { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); }
+    .user-item:last-child { border-bottom: none; }
+    .user-info { min-width: 0; flex: 1; }
+    .user-name  { font-weight: 500; font-size: 13px; }
+    .user-email { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-no-email { font-size: 12px; color: var(--text-disabled); font-style: italic; }
+    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>📰 News Acknowledgement Tracker</h1>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <input type="text" class="search-input" id="search-input"
+      placeholder="Search posts or channels…" oninput="filterPosts()" />
+    <button class="btn-secondary btn-sm" onclick="loadAll()" id="refresh-btn">⟳ Refresh</button>
+  </div>
+</header>
+
+<main class="app-main">
+  <div class="card" id="main-card">
+    <div class="card-header">
+      <h2 id="card-title">All Posts</h2>
+    </div>
+    <div id="stats-bar" class="stats-bar" style="display:none;">
+      <div class="stat">
+        <span class="stat-val" id="stat-posts">—</span>
+        <span class="stat-label">Posts</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-channels">—</span>
+        <span class="stat-label">Channels</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val danger" id="stat-unread">—</span>
+        <span class="stat-label">Total unread</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-disabled">—</span>
+        <span class="stat-label">Acknowledging off</span>
+      </div>
+    </div>
+    <div id="posts-area">
+      <div class="empty">
+        <div class="spinner"></div>
+        <p class="empty-title" style="margin-top:12px;">Discovering channels…</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Acknowledgement detail modal -->
+<div class="modal-backdrop hidden" id="ack-modal" onclick="maybeCloseModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Acknowledgement Status</h2>
+      <p id="modal-post-title">—</p>
+    </div>
+    <div id="modal-progress-bar" class="modal-progress" style="display:none;">
+      <p id="modal-progress-text"></p>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div id="modal-loading" class="empty" style="padding:32px;">
+      <div class="spinner"></div>
+      <p style="margin-top:12px;">Loading acknowledgement data…</p>
+    </div>
+    <div id="modal-content" style="display:none;flex-direction:column;flex:1;min-height:0;">
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tab-unread" onclick="switchTab('unread')">
+          Not acknowledged (<span id="unread-count">0</span>)
+        </button>
+        <button class="tab-btn" id="tab-read" onclick="switchTab('read')">
+          Acknowledged (<span id="read-count">0</span>)
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul id="unread-list" style="list-style:none;"></ul>
+        <ul id="read-list"   style="list-style:none;display:none;"></ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Close</button>
+      <button class="btn-primary" id="send-btn" style="display:none;" onclick="sendReminders()">
+        Send reminder (<span id="send-count">0</span>)
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+let allPosts      = [];
+let filteredPosts = [];
+let channelMap    = {};  // channelId → { name, approximateRecipients }
+let currentStatus = null;
+
+// ── Load ─────────────────────────────────────────────────────────────────
+
+async function loadAll() {
+  document.getElementById("refresh-btn").disabled = true;
+  document.getElementById("stats-bar").style.display = "none";
+  document.getElementById("search-input").value = "";
+  setPostsArea(loadingHTML("Discovering channels…"));
+
+  // 1. Discover channels
+  let channels;
+  try {
+    const res  = await fetch("/api/channels");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    channels = data.channels ?? [];
+  } catch (err) {
+    setPostsArea(errorHTML("Channel discovery failed", err.message));
+    document.getElementById("refresh-btn").disabled = false;
+    return;
+  }
+
+  if (channels.length === 0) {
+    setPostsArea(emptyHTML("No channels found", "No news channel installations were returned."));
+    document.getElementById("refresh-btn").disabled = false;
+    return;
+  }
+
+  channelMap = {};
+  for (const ch of channels) channelMap[ch.id] = ch;
+
+  const channelIds   = channels.map(c => c.id).join(",");
+  const channelNames = Object.fromEntries(channels.map(c => [c.id, c.name]));
+
+  setPostsArea(loadingHTML(`Loading posts from ${channels.length} channel(s)…`));
+
+  // 2. Load all posts
+  try {
+    const res  = await fetch(
+      `/api/all-posts?channelIds=${encodeURIComponent(channelIds)}&limit=50`,
+      { headers: { "x-channel-names": JSON.stringify(channelNames) } }
+    );
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    allPosts = data.posts ?? [];
+  } catch (err) {
+    setPostsArea(errorHTML("Failed to load posts", err.message));
+    document.getElementById("refresh-btn").disabled = false;
+    return;
+  }
+
+  document.getElementById("card-title").textContent =
+    `All Posts — ${channels.length} channel${channels.length !== 1 ? "s" : ""}`;
+
+  applyFilter();
+  renderStats();
+  document.getElementById("refresh-btn").disabled = false;
+}
+
+// ── Filter + render ───────────────────────────────────────────────────────
+
+function filterPosts() { applyFilter(); }
+
+function applyFilter() {
+  const q = (document.getElementById("search-input").value ?? "").toLowerCase().trim();
+  filteredPosts = q
+    ? allPosts.filter(p =>
+        getPostTitle(p).toLowerCase().includes(q) ||
+        (p.channelName ?? "").toLowerCase().includes(q)
+      )
+    : allPosts;
+  renderTable();
+}
+
+function renderStats() {
+  const totalPosts    = allPosts.length;
+  const numChannels   = new Set(allPosts.map(p => p.channelId)).size;
+  const ackDisabled   = allPosts.filter(p => !p.acknowledgingEnabled).length;
+
+  let totalUnread = 0;
+  for (const post of allPosts) {
+    if (!post.acknowledgingEnabled) continue;
+    const ch = channelMap[post.channelId];
+    if (!ch) continue;
+    totalUnread += Math.max(0, ch.approximateRecipients - (post.acknowledgements?.total ?? 0));
+  }
+
+  document.getElementById("stat-posts").textContent    = totalPosts;
+  document.getElementById("stat-channels").textContent = numChannels;
+  document.getElementById("stat-unread").textContent   = totalUnread;
+  document.getElementById("stat-disabled").textContent = ackDisabled;
+  document.getElementById("stats-bar").style.display   = "flex";
+}
+
+function renderTable() {
+  if (filteredPosts.length === 0) {
+    setPostsArea(
+      allPosts.length === 0
+        ? emptyHTML("No posts found", "No posts were returned from any channel.")
+        : emptyHTML("No matching posts", "Try a different search term.")
+    );
+    return;
+  }
+
+  const rows = filteredPosts.map(post => {
+    const title      = getPostTitle(post);
+    const published  = post.published ?? post.planned;
+    const ackCount   = post.acknowledgements?.total ?? 0;
+    const ackEnabled = post.acknowledgingEnabled ?? false;
+    const postUrl    = post.links?.detail_view?.href;
+    const ch         = channelMap[post.channelId];
+
+    // Not-acknowledged count
+    let notAckedHtml = '<span style="color:var(--text-disabled)">—</span>';
+    if (ackEnabled && ch?.approximateRecipients > 0) {
+      const notAcked = Math.max(0, ch.approximateRecipients - ackCount);
+      const pct      = Math.round((ackCount / ch.approximateRecipients) * 100);
+      const cls      = notAcked === 0 ? "zero" : notAcked <= 3 ? "low" : "high";
+      notAckedHtml   = `<div class="not-ack ${cls}">${notAcked}</div><div class="ack-pct">~${pct}% read</div>`;
+    } else if (!ackEnabled) {
+      notAckedHtml = '<span class="pill pill-grey" style="font-size:11px;">N/A</span>';
+    }
+
+    const extLink = postUrl
+      ? `<a href="${esc(postUrl)}" target="_blank" rel="noopener noreferrer"
+           style="color:var(--primary);text-decoration:none;font-size:14px;flex-shrink:0;">↗</a>`
+      : "";
+
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block;">${esc(title)}</span>
+          ${extLink}
+        </div>
+      </td>
+      <td><span class="channel-chip" title="${esc(post.channelName ?? post.channelId)}">${esc(post.channelName ?? post.channelId)}</span></td>
+      <td style="white-space:nowrap;color:var(--text-secondary);font-size:12px;">${published ? fmtDate(published) : "—"}</td>
+      <td style="font-weight:600;">${ackCount}</td>
+      <td>${notAckedHtml}</td>
+      <td>${ackEnabled ? '<span class="pill pill-green">On</span>' : '<span class="pill pill-grey">Off</span>'}</td>
+      <td>
+        <div class="td-actions">
+          ${!ackEnabled
+            ? `<button class="btn-ghost btn-sm" onclick="enableAcknowledging('${esc(post.id)}', this)">Enable</button>`
+            : `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(post.id)}', ${JSON.stringify(title).replace(/"/g,"&quot;")})">Details</button>`
+          }
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+
+  setPostsArea(`
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Post Title</th>
+            <th>Channel</th>
+            <th>Published</th>
+            <th>Acknowledged</th>
+            <th>Not Acknowledged <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;">(approx)</span></th>
+            <th>Acknowledging</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`);
+}
+
+// ── Enable acknowledging ──────────────────────────────────────────────────
+
+async function enableAcknowledging(postId, btn) {
+  btn.disabled = true;
+  btn.textContent = "Enabling…";
+  try {
+    const res  = await fetch("/api/enable-ack", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    const post = allPosts.find(p => p.id === postId);
+    if (post) post.acknowledgingEnabled = true;
+    applyFilter();
+    renderStats();
+    toast("Acknowledging enabled.", "success");
+  } catch (err) {
+    toast(err.message, "error");
+    btn.disabled = false;
+    btn.textContent = "Enable";
+  }
+}
+
+// ── Acknowledgement status modal ──────────────────────────────────────────
+
+async function viewStatus(postId, postTitle) {
+  currentStatus = null;
+  openModal(postTitle);
+  try {
+    const res  = await fetch(`/api/ack-status?postId=${encodeURIComponent(postId)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    currentStatus = data;
+    renderModalContent(data);
+  } catch (err) {
+    document.getElementById("modal-loading").innerHTML =
+      `<p style="color:var(--danger);font-weight:600;">Failed to load</p>
+       <p style="color:var(--text-secondary);margin-top:6px;">${esc(err.message)}</p>`;
+    toast(err.message, "error");
+  }
+}
+
+function openModal(postTitle) {
+  document.getElementById("modal-post-title").textContent     = postTitle;
+  document.getElementById("modal-loading").style.display      = "block";
+  document.getElementById("modal-loading").innerHTML          =
+    `<div class="spinner"></div><p style="margin-top:12px;">Loading acknowledgement data…</p>`;
+  document.getElementById("modal-content").style.display      = "none";
+  document.getElementById("modal-progress-bar").style.display = "none";
+  document.getElementById("send-btn").style.display           = "none";
+  document.getElementById("ack-modal").classList.remove("hidden");
+  switchTab("unread");
+}
+
+function renderModalContent(status) {
+  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients } = status;
+  const pct = totalRecipients > 0 ? Math.round((read.length / totalRecipients) * 100) : 0;
+
+  document.getElementById("modal-progress-bar").style.display = "block";
+  document.getElementById("modal-progress-text").textContent  =
+    `${read.length} of ${totalRecipients} recipients acknowledged (${pct}%)`;
+  document.getElementById("progress-fill").style.width = `${pct}%`;
+
+  document.getElementById("unread-count").textContent = unread.length;
+  document.getElementById("read-count").textContent   = read.length;
+  document.getElementById("unread-list").innerHTML    = renderUserList(unread, true);
+  document.getElementById("read-list").innerHTML      = renderUserList(read, false);
+
+  if (unread.length > 0) {
+    document.getElementById("send-btn").style.display = "inline-flex";
+    document.getElementById("send-count").textContent = unread.length;
+  }
+
+  document.getElementById("modal-loading").style.display = "none";
+  document.getElementById("modal-content").style.display = "flex";
+}
+
+function renderUserList(users, showNoEmail) {
+  if (users.length === 0) {
+    const msg = showNoEmail ? "Everyone has acknowledged! 🎉" : "No acknowledgements yet.";
+    return `<li style="padding:32px 24px;text-align:center;color:var(--text-secondary);">${msg}</li>`;
+  }
+  return users.map(u => {
+    const name    = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown user";
+    const emailEl = u.email
+      ? `<div class="user-email">${esc(u.email)}</div>`
+      : (showNoEmail ? `<div class="user-no-email">No email — will be skipped</div>` : "");
+    return `<li class="user-item"><div class="user-info"><div class="user-name">${esc(name)}</div>${emailEl}</div></li>`;
+  }).join("");
+}
+
+function switchTab(tab) {
+  ["unread","read"].forEach(t => {
+    document.getElementById(`tab-${t}`).classList.toggle("active", t === tab);
+    document.getElementById(`${t}-list`).style.display = t === tab ? "block" : "none";
+  });
+}
+
+function maybeCloseModal(e) { if (e.target === document.getElementById("ack-modal")) closeModal(); }
+function closeModal() { document.getElementById("ack-modal").classList.add("hidden"); }
+
+// ── Send reminders ────────────────────────────────────────────────────────
+
+async function sendReminders() {
+  if (!currentStatus) return;
+  const btn = document.getElementById("send-btn");
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  try {
+    const res  = await fetch("/api/send-reminder", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId:    currentStatus.postId,
+        postTitle: currentStatus.postTitle,
+        postUrl:   currentStatus.postUrl,
+        userIds:   currentStatus.notAcknowledgedUsers.map(u => u.userId),
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    toast(
+      data.skipped > 0
+        ? `Sent to ${data.sent}, skipped ${data.skipped} (no email).`
+        : `Reminder sent to ${data.sent} recipient(s).`,
+      "success"
+    );
+    closeModal();
+  } catch (err) {
+    toast(err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = `Send reminder (${document.getElementById("send-count").textContent})`;
+  }
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────
+
+function getPostTitle(post) {
+  if (!post.contents) return post.id;
+  return Object.values(post.contents).find(l => l?.title)?.title ?? post.id;
+}
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
+}
+
+function esc(s) {
+  return String(s ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function setPostsArea(html) { document.getElementById("posts-area").innerHTML = html; }
+
+function loadingHTML(msg) {
+  return `<div class="empty"><div class="spinner"></div><p class="empty-title" style="margin-top:12px;">${esc(msg)}</p></div>`;
+}
+function emptyHTML(title, body) {
+  return `<div class="empty"><p class="empty-title">${esc(title)}</p><p style="margin-top:6px;">${esc(body)}</p></div>`;
+}
+function errorHTML(title, detail) {
+  return `<div class="error-banner"><strong>${esc(title)}</strong>${esc(detail)}</div>`;
+}
+
+function toast(msg, type = "") {
+  const el = document.createElement("div");
+  el.className = ["toast", type].filter(Boolean).join(" ");
+  el.textContent = msg;
+  document.getElementById("toast-container").appendChild(el);
+  setTimeout(() => el.remove(), 4500);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>
