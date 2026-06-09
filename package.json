@@ -1,31 +1,7 @@
 {
-  "name": "cc-custom-plugin-template",
-  "private": true,
+  "name": "news-tracker",
+  "version": "1.0.0",
   "engines": {
-    "node": ">=24"
-  },
-  "workspaces": [
-    "server",
-    "client"
-  ],
-  "scripts": {
-    "prepare": "git config core.hooksPath .githooks || true",
-    "dev": "bun scripts/dev.ts",
-    "dev:apps": "bun run --filter ./server dev & bun run --filter ./client dev",
-    "build": "bun run --filter ./client build && bun run --filter ./server build",
-    "build:widget": "cd widget && bun install && bun run build",
-    "migrate": "bun run --filter ./server migrate",
-    "check": "biome check server/src client/src e2e playwright.config.ts playwright.a11y.config.ts && bun run check:design-system",
-    "check:design-system": "bun scripts/lint-design-system.ts",
-    "test": "bun test",
-    "test:e2e": "playwright test",
-    "test:e2e:smoke": "playwright test --grep @smoke --project chromium",
-    "test:e2e:a11y": "playwright test --config=playwright.a11y.config.ts",
-    "test:e2e:ci": "bun run --filter ./client build && CI=true bunx playwright test"
-  },
-  "devDependencies": {
-    "@axe-core/playwright": "^4.11.1",
-    "@biomejs/biome": "^2",
-    "@playwright/test": "^1.59.1"
+    "node": ">=18"
   }
 }
