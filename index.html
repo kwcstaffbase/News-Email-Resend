@@ -5,614 +5,659 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>News Acknowledgement Tracker</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text: #0f172a;
-      --text-sec: #64748b;
-      --text-dim: #94a3b8;
-      --primary: #6c00ff;
-      --primary-h: #5800d4;
-      --success: #16a34a;
-      --success-bg: #dcfce7;
-      --orange: #ea580c;
-      --orange-bg: #fff7ed;
-      --danger: #dc2626;
-      --danger-bg: #fef2f2;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
-      --shadow-lg: 0 10px 28px rgba(0,0,0,.14);
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#f8fafc;--surface:#fff;--border:#e2e8f0;--border-s:#cbd5e1;
+      --text:#0f172a;--text-m:#64748b;--text-d:#94a3b8;
+      --primary:#6c00ff;--primary-h:#5800d4;
+      --green:#16a34a;--green-bg:#dcfce7;
+      --orange:#ea580c;--orange-bg:#fff7ed;
+      --red:#dc2626;--red-bg:#fef2f2;
+      --r:8px;--sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+      --sh-lg:0 10px 28px rgba(0,0,0,.14);
     }
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
 
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+    /* header */
+    .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:10;gap:16px}
+    .hdr h1{font-size:16px;font-weight:600}
+    .hdr-r{display:flex;align-items:center;gap:10px}
 
-    /* ── Header ── */
-    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 10; gap: 16px; }
-    .app-header h1 { font-size: 16px; font-weight: 600; }
-    .header-right { display: flex; align-items: center; gap: 10px; }
+    main{max-width:1200px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:20px}
 
-    /* ── Main ── */
-    .app-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px; }
+    /* card */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+    .card-hdr{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .card-hdr h2{font-size:14px;font-weight:600}
+    .card-body{padding:20px}
 
-    /* ── Card ── */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .card-header h2 { font-size: 14px; font-weight: 600; }
-    .card-body { padding: 20px; }
+    /* buttons */
+    button{font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;border-radius:6px;padding:7px 14px;transition:background .15s,opacity .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .btn-p{background:var(--primary);color:#fff}.btn-p:hover:not(:disabled){background:var(--primary-h)}
+    .btn-s{background:transparent;color:var(--text);border:1px solid var(--border-s)}.btn-s:hover:not(:disabled){background:var(--bg)}
+    .btn-g{background:transparent;color:var(--primary);padding:5px 10px}.btn-g:hover:not(:disabled){background:#f3e8ff}
+    .btn-sm{padding:5px 10px;font-size:12px}
 
-    /* ── Buttons ── */
-    button { font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; border: none; border-radius: 6px; padding: 7px 14px; transition: background .15s, opacity .15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-h); }
-    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border-strong); }
-    .btn-secondary:hover:not(:disabled) { background: var(--bg); }
-    .btn-ghost { background: transparent; color: var(--primary); padding: 5px 10px; }
-    .btn-ghost:hover:not(:disabled) { background: #f3e8ff; }
-    .btn-sm { padding: 5px 10px; font-size: 12px; }
-    .btn-link { background: none; border: none; color: var(--primary); font-size: 12px; padding: 0; text-decoration: underline; cursor: pointer; display: inline; }
+    /* form */
+    .field{display:flex;flex-direction:column;gap:5px}
+    .field label{font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.05em}
+    input[type=text],input[type=url],input[type=password]{font-family:inherit;font-size:13px;padding:8px 12px;border:1px solid var(--border-s);border-radius:6px;outline:none;width:100%;background:var(--surface);color:var(--text);transition:border-color .15s}
+    input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,0,255,.12)}
+    .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 
-    /* ── Form ── */
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 11px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; letter-spacing: .05em; }
-    input[type=text], input[type=url], input[type=password] { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 6px; outline: none; width: 100%; transition: border-color .15s; background: var(--surface); color: var(--text); }
-    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    /* dot */
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;flex-shrink:0}
+    .dot.ok{background:var(--green)}
 
-    /* ── Creds status dot ── */
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; display: inline-block; }
-    .dot.ok { background: var(--success); }
+    /* stats */
+    .stats{display:flex;gap:24px;padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--border);flex-wrap:wrap}
+    .stat{display:flex;flex-direction:column;gap:2px}
+    .stat-v{font-size:22px;font-weight:700;line-height:1}
+    .stat-l{font-size:11px;color:var(--text-m);text-transform:uppercase;letter-spacing:.04em}
+    .red{color:var(--red)}.grn{color:var(--green)}
 
-    /* ── Stats bar ── */
-    .stats-bar { display: flex; gap: 24px; padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-    .stat { display: flex; flex-direction: column; gap: 2px; }
-    .stat-val { font-size: 22px; font-weight: 700; line-height: 1; }
-    .stat-label { font-size: 11px; color: var(--text-sec); text-transform: uppercase; letter-spacing: .04em; }
-    .danger { color: var(--danger); }
-    .success { color: var(--success); }
+    /* table */
+    .t-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-m);border-bottom:1px solid var(--border);white-space:nowrap;background:#fafafa}
+    tbody tr{border-bottom:1px solid var(--border)}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:#fafafa}
+    td{padding:11px 16px;vertical-align:middle}
+    .acts{display:flex;gap:6px;align-items:center}
 
-    /* ── Table ── */
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th { text-align: left; padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-sec); border-bottom: 1px solid var(--border); white-space: nowrap; background: #fafafa; }
-    tbody tr { border-bottom: 1px solid var(--border); }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: #fafafa; }
-    td { padding: 11px 16px; vertical-align: middle; }
-    .td-actions { display: flex; gap: 6px; align-items: center; }
+    /* pills */
+    .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+    .pill-grn{background:var(--green-bg);color:var(--green)}
+    .pill-grey{background:#f1f5f9;color:var(--text-m)}
+    .chip{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:#ede9fe;color:#6d28d9;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
 
-    /* ── Pills ── */
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-    .pill-green  { background: var(--success-bg); color: var(--success); }
-    .pill-grey   { background: #f1f5f9; color: var(--text-sec); }
-    .chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #ede9fe; color: #6d28d9; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    /* not-ack */
+    .na{font-weight:700;font-size:15px}
+    .na.zero{color:var(--green)}.na.low{color:var(--orange)}.na.high{color:var(--red)}
+    .na-pct{font-size:11px;color:var(--text-m);margin-top:1px}
 
-    /* ── Not-acknowledged ── */
-    .not-ack { font-weight: 700; font-size: 15px; }
-    .not-ack.zero { color: var(--success); }
-    .not-ack.low  { color: var(--orange); }
-    .not-ack.high { color: var(--danger); }
-    .ack-pct { font-size: 11px; color: var(--text-sec); margin-top: 1px; }
+    /* empty / loading */
+    .empty{text-align:center;padding:56px 24px;color:var(--text-m)}
+    .empty-t{font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px}
+    .spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .err-box{margin:16px;padding:14px 16px;background:var(--red-bg);border:1px solid #fecaca;border-radius:var(--r);color:var(--red);font-size:13px}
+    .err-box strong{display:block;margin-bottom:4px}
 
-    /* ── Empty / loading / error ── */
-    .empty { text-align: center; padding: 56px 24px; color: var(--text-sec); }
-    .empty-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
-    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .error-box { margin: 16px; padding: 14px 16px; background: var(--danger-bg); border: 1px solid #fecaca; border-radius: var(--radius); color: var(--danger); font-size: 13px; }
-    .error-box strong { display: block; margin-bottom: 4px; }
+    /* search */
+    .srch{padding:7px 12px;border:1px solid var(--border-s);border-radius:6px;font-size:13px;font-family:inherit;outline:none;width:220px;background:var(--surface);color:var(--text)}
+    .srch:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(108,0,255,.12)}
 
-    /* ── Toolbar ── */
-    .search-input { padding: 7px 12px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; width: 220px; background: var(--surface); color: var(--text); }
-    .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
+    /* toast */
+    #toasts{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:1000}
+    .toast{background:var(--text);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;max-width:340px;box-shadow:var(--sh-lg);animation:si .2s ease}
+    .toast.ok{background:var(--green)}.toast.err{background:var(--red)}
+    @keyframes si{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
 
-    /* ── Toast ── */
-    #toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-    .toast { background: var(--text); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; max-width: 340px; box-shadow: var(--shadow-lg); animation: slide-in .2s ease; }
-    .toast.success { background: var(--success); }
-    .toast.error   { background: var(--danger); }
-    @keyframes slide-in { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
-
-    /* ── Modal ── */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
-    .modal-backdrop.hidden { display: none; }
-    .modal { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); }
-    .modal-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .modal-header h2 { font-size: 15px; font-weight: 600; }
-    .modal-header p { font-size: 12px; color: var(--text-sec); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .modal-progress { padding: 12px 24px; border-bottom: 1px solid var(--border); background: #fafafa; flex-shrink: 0; }
-    .modal-progress p { font-size: 12px; color: var(--text-sec); margin-bottom: 6px; }
-    .progress-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width .3s; }
-    .modal-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .tab-btn { flex: 1; padding: 10px 16px; font-size: 13px; font-weight: 500; background: none; border: none; border-radius: 0; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-sec); transition: color .15s, border-color .15s; }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg); }
-    .modal-body { flex: 1; overflow-y: auto; min-height: 0; }
-    .user-item { display: flex; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); }
-    .user-item:last-child { border-bottom: none; }
-    .user-info { min-width: 0; flex: 1; }
-    .user-name  { font-weight: 500; font-size: 13px; }
-    .user-email { font-size: 12px; color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-no-email { font-size: 12px; color: var(--text-dim); font-style: italic; }
-    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+    /* modal */
+    .mbk{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+    .mbk.hidden{display:none}
+    .modal{background:var(--surface);border-radius:var(--r);width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;box-shadow:var(--sh-lg)}
+    .m-hdr{padding:20px 24px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .m-hdr h2{font-size:15px;font-weight:600}
+    .m-hdr p{font-size:12px;color:var(--text-m);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .m-prog{padding:12px 24px;border-bottom:1px solid var(--border);background:#fafafa;flex-shrink:0}
+    .m-prog p{font-size:12px;color:var(--text-m);margin-bottom:6px}
+    .prog-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden}
+    .prog-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+    .m-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+    .tab{flex:1;padding:10px 16px;font-size:13px;font-weight:500;background:none;border:none;border-radius:0;border-bottom:2px solid transparent;cursor:pointer;color:var(--text-m);transition:color .15s,border-color .15s}
+    .tab.on{color:var(--primary);border-bottom-color:var(--primary)}
+    .tab:hover:not(.on){color:var(--text);background:var(--bg)}
+    .m-body{flex:1;overflow-y:auto;min-height:0}
+    .u-item{display:flex;align-items:center;padding:10px 24px;border-bottom:1px solid var(--border)}
+    .u-item:last-child{border-bottom:none}
+    .u-info{min-width:0;flex:1}
+    .u-name{font-weight:500;font-size:13px}
+    .u-email{font-size:12px;color:var(--text-m);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .u-no-email{font-size:12px;color:var(--text-d);font-style:italic}
+    .m-ftr{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0}
   </style>
 </head>
 <body>
 
-<header class="app-header">
+<header class="hdr">
   <h1>📰 News Acknowledgement Tracker</h1>
-  <div class="header-right">
-    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-sec);">
-      <span class="dot" id="creds-dot"></span>
-      <span id="creds-label">Not configured</span>
+  <div class="hdr-r">
+    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-m);">
+      <span class="dot" id="dot"></span>
+      <span id="dot-lbl">Not configured</span>
     </span>
-    <button class="btn-secondary btn-sm" onclick="toggleSettings()">⚙ Settings</button>
+    <button class="btn-s btn-sm" onclick="toggleSettings()">⚙ Settings</button>
   </div>
 </header>
 
-<main class="app-main">
+<main>
 
-  <!-- Settings card (hidden once configured) -->
-  <div class="card" id="settings-card">
-    <div class="card-header">
+  <!-- Settings -->
+  <div class="card" id="cfg-card">
+    <div class="card-hdr">
       <h2>Settings</h2>
-      <button class="btn-ghost btn-sm" id="settings-close" onclick="toggleSettings()" style="display:none;">✕ Close</button>
+      <button class="btn-g btn-sm" id="cfg-close" onclick="toggleSettings()" style="display:none;">✕ Close</button>
     </div>
     <div class="card-body">
       <div class="grid-3">
         <div class="field">
-          <label for="inp-url">Staffbase Instance URL</label>
-          <input type="url" id="inp-url" placeholder="https://yourco.staffbase.com" autocomplete="off" />
+          <label for="i-url">Staffbase Instance URL</label>
+          <input type="url" id="i-url" placeholder="https://yourco.staffbase.com" autocomplete="off" />
         </div>
         <div class="field">
-          <label for="inp-token">API Token</label>
-          <input type="password" id="inp-token" placeholder="Base64 encoded token" autocomplete="new-password" />
+          <label for="i-tok">API Token</label>
+          <input type="password" id="i-tok" placeholder="Base64 encoded token" autocomplete="new-password" />
         </div>
         <div class="field">
-          <label for="inp-email">Email Service URL</label>
-          <input type="url" id="inp-email" placeholder="https://email-service.example.com/api/emails" autocomplete="off" />
+          <label for="i-email">Email Service URL</label>
+          <input type="url" id="i-email" placeholder="https://email-service.example.com/api/emails" autocomplete="off" />
         </div>
       </div>
       <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <button class="btn-primary" onclick="saveAndLoad()">Save &amp; Load Posts</button>
-        <button class="btn-secondary" onclick="clearSettings()">Clear</button>
-        <span style="font-size:12px;color:var(--text-sec);">Stored in <code>sessionStorage</code> — cleared when you close this tab.</span>
+        <button class="btn-p" onclick="saveAndLoad()">Save &amp; Load Posts</button>
+        <button class="btn-s" onclick="clearCfg()">Clear</button>
+        <span style="font-size:12px;color:var(--text-m);">Stored in <code>sessionStorage</code> — cleared when you close this tab.</span>
       </div>
     </div>
   </div>
 
-  <!-- Posts card -->
+  <!-- Posts -->
   <div class="card" id="posts-card" style="display:none;">
-    <div class="card-header">
+    <div class="card-hdr">
       <h2 id="card-title">All Posts</h2>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <input type="text" class="search-input" id="search-input" placeholder="Search posts or channels…" oninput="filterPosts()" />
-        <button class="btn-secondary btn-sm" id="refresh-btn" onclick="loadPosts()">⟳ Refresh</button>
+        <input class="srch" id="srch" placeholder="Search posts or channels…" oninput="filter()" />
+        <button class="btn-s btn-sm" id="ref-btn" onclick="loadPosts()">⟳ Refresh</button>
       </div>
     </div>
-    <div id="stats-bar" class="stats-bar" style="display:none;">
-      <div class="stat"><span class="stat-val" id="stat-posts">—</span><span class="stat-label">Posts</span></div>
-      <div class="stat"><span class="stat-val" id="stat-channels">—</span><span class="stat-label">Channels</span></div>
-      <div class="stat"><span class="stat-val danger" id="stat-unread">—</span><span class="stat-label">Total unread</span></div>
-      <div class="stat"><span class="stat-val" id="stat-disabled">—</span><span class="stat-label">Acknowledging off</span></div>
+    <div id="stats" class="stats" style="display:none;">
+      <div class="stat"><span class="stat-v" id="s-posts">—</span><span class="stat-l">Posts</span></div>
+      <div class="stat"><span class="stat-v" id="s-ch">—</span><span class="stat-l">Channels</span></div>
+      <div class="stat"><span class="stat-v red" id="s-unread">—</span><span class="stat-l">Total unread</span></div>
+      <div class="stat"><span class="stat-v" id="s-off">—</span><span class="stat-l">Acknowledging off</span></div>
     </div>
-    <div id="posts-area"></div>
+    <div id="area"></div>
   </div>
 
 </main>
 
-<!-- Acknowledgement detail modal -->
-<div class="modal-backdrop hidden" id="ack-modal" onclick="maybeCloseModal(event)">
+<!-- Modal -->
+<div class="mbk hidden" id="modal" onclick="maybeClose(event)">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-header">
+    <div class="m-hdr">
       <h2>Acknowledgement Status</h2>
-      <p id="modal-post-title">—</p>
+      <p id="m-title">—</p>
     </div>
-    <div id="modal-progress-bar" class="modal-progress" style="display:none;">
-      <p id="modal-progress-text"></p>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div id="m-prog" class="m-prog" style="display:none;">
+      <p id="m-prog-txt"></p>
+      <div class="prog-bar"><div class="prog-fill" id="m-fill" style="width:0%"></div></div>
     </div>
-    <div id="modal-loading" class="empty" style="padding:32px;">
+    <div id="m-load" class="empty" style="padding:32px;">
       <div class="spinner"></div>
-      <p style="margin-top:12px;">Loading acknowledgement data…</p>
+      <p style="margin-top:12px;">Loading…</p>
     </div>
-    <div id="modal-content" style="display:none;flex-direction:column;flex:1;min-height:0;">
-      <div class="modal-tabs">
-        <button class="tab-btn active" id="tab-unread" onclick="switchTab('unread')">Not acknowledged (<span id="unread-count">0</span>)</button>
-        <button class="tab-btn"        id="tab-read"   onclick="switchTab('read')">Acknowledged (<span id="read-count">0</span>)</button>
+    <div id="m-body" style="display:none;flex-direction:column;flex:1;min-height:0;">
+      <div class="m-tabs">
+        <button class="tab on" id="t-unread" onclick="tab('unread')">Not acknowledged (<span id="c-unread">0</span>)</button>
+        <button class="tab"    id="t-read"   onclick="tab('read')">Acknowledged (<span id="c-read">0</span>)</button>
       </div>
-      <div class="modal-body">
-        <ul id="unread-list" style="list-style:none;"></ul>
-        <ul id="read-list"   style="list-style:none;display:none;"></ul>
+      <div class="m-body">
+        <ul id="l-unread" style="list-style:none;"></ul>
+        <ul id="l-read"   style="list-style:none;display:none;"></ul>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeModal()">Close</button>
-      <button class="btn-primary" id="send-btn" style="display:none;" onclick="sendReminders()">Send reminder (<span id="send-count">0</span>)</button>
+    <div class="m-ftr">
+      <button class="btn-s" onclick="closeModal()">Close</button>
+      <button class="btn-p" id="send-btn" style="display:none;" onclick="sendReminders()">Send reminder (<span id="send-n">0</span>)</button>
     </div>
   </div>
 </div>
 
-<div id="toast-container"></div>
+<div id="toasts"></div>
 
 <script>
-// ── State ─────────────────────────────────────────────────────────────────
-let cfg = { url: "", token: "", emailUrl: "" };
-let allPosts = [], filteredPosts = [], channelMap = {}, currentStatus = null;
+// ── Config ────────────────────────────────────────────────────────────────
+let cfg = { url:"", token:"", emailUrl:"" };
+let allPosts=[], shown=[], chMap={}, curStatus=null;
 
-// ── Settings ──────────────────────────────────────────────────────────────
-
-function loadFromStorage() {
-  cfg.url      = sessionStorage.getItem("sb_url")       ?? "";
-  cfg.token    = sessionStorage.getItem("sb_token")     ?? "";
-  cfg.emailUrl = sessionStorage.getItem("sb_email_url") ?? "";
-  document.getElementById("inp-url").value   = cfg.url;
-  document.getElementById("inp-token").value = cfg.token;
-  document.getElementById("inp-email").value = cfg.emailUrl;
+function loadCfg() {
+  cfg.url      = sessionStorage.getItem("sb_url")   || "";
+  cfg.token    = sessionStorage.getItem("sb_tok")   || "";
+  cfg.emailUrl = sessionStorage.getItem("sb_email") || "";
+  $("i-url").value   = cfg.url;
+  $("i-tok").value   = cfg.token;
+  $("i-email").value = cfg.emailUrl;
   updateDot();
 }
-
-function saveSettings() {
-  cfg.url      = document.getElementById("inp-url").value.trim();
-  cfg.token    = document.getElementById("inp-token").value.trim();
-  cfg.emailUrl = document.getElementById("inp-email").value.trim();
-  sessionStorage.setItem("sb_url",       cfg.url);
-  sessionStorage.setItem("sb_token",     cfg.token);
-  sessionStorage.setItem("sb_email_url", cfg.emailUrl);
+function saveCfg() {
+  cfg.url      = $("i-url").value.trim();
+  cfg.token    = $("i-tok").value.trim();
+  cfg.emailUrl = $("i-email").value.trim();
+  sessionStorage.setItem("sb_url",   cfg.url);
+  sessionStorage.setItem("sb_tok",   cfg.token);
+  sessionStorage.setItem("sb_email", cfg.emailUrl);
   updateDot();
 }
-
-function clearSettings() {
-  ["sb_url","sb_token","sb_email_url"].forEach(k => sessionStorage.removeItem(k));
-  cfg = { url: "", token: "", emailUrl: "" };
-  ["inp-url","inp-token","inp-email"].forEach(id => { document.getElementById(id).value = ""; });
+function clearCfg() {
+  ["sb_url","sb_tok","sb_email"].forEach(k=>sessionStorage.removeItem(k));
+  cfg={url:"",token:"",emailUrl:""};
+  ["i-url","i-tok","i-email"].forEach(id=>$(id).value="");
   updateDot();
-  allPosts = []; filteredPosts = []; channelMap = {};
-  document.getElementById("posts-card").style.display = "none";
+  allPosts=[]; shown=[]; chMap={};
+  $("posts-card").style.display="none";
   toast("Settings cleared.");
 }
-
 function updateDot() {
-  const ok = Boolean(cfg.url && cfg.token);
-  document.getElementById("creds-dot").className      = "dot" + (ok ? " ok" : "");
-  document.getElementById("creds-label").textContent  = ok ? "Credentials configured" : "Not configured";
+  const ok = !!(cfg.url && cfg.token);
+  $("dot").className     = "dot"+(ok?" ok":"");
+  $("dot-lbl").textContent = ok ? "Credentials configured" : "Not configured";
 }
-
 function toggleSettings() {
-  const card  = document.getElementById("settings-card");
-  const close = document.getElementById("settings-close");
-  const open  = card.style.display === "none";
-  card.style.display  = open ? "block" : "none";
-  close.style.display = open ? "inline-flex" : "none";
+  const card = $("cfg-card"), btn = $("cfg-close");
+  const open = card.style.display==="none";
+  card.style.display = open ? "block" : "none";
+  btn.style.display  = open ? "inline-flex" : "none";
 }
 
-// ── Credentials injected into every API call body ─────────────────────────
-// All requests are POST; credentials travel in the JSON body — never as headers.
-function withCreds(extra) {
-  return { staffbaseUrl: cfg.url, apiToken: cfg.token, ...extra };
-}
-
-async function post(path, body) {
-  const res = await fetch(path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+// ── Staffbase API — called DIRECTLY from the browser ─────────────────────
+// Every fetch goes to cfg.url (your Staffbase instance), not to Vercel.
+async function sbGet(path) {
+  const res = await fetch(cfg.url + path, {
+    headers: { Authorization: "Basic " + cfg.token }
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-  return data;
+  if (!res.ok) {
+    const body = await res.json().catch(()=>({}));
+    throw new Error(body.message ?? `Staffbase API returned ${res.status} for ${path}`);
+  }
+  return res.json();
+}
+async function sbPost(path, data) {
+  const res = await fetch(cfg.url + path, {
+    method: "POST",
+    headers: { Authorization: "Basic " + cfg.token, "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(()=>({}));
+    throw new Error(body.message ?? `Staffbase API returned ${res.status} for ${path}`);
+  }
+  return res.json();
 }
 
-// ── Load ──────────────────────────────────────────────────────────────────
-
-async function saveAndLoad() {
-  saveSettings();
-  if (!cfg.url || !cfg.token) {
-    toast("Enter your Staffbase URL and API token.", "error");
-    return;
+// ── Discovery ─────────────────────────────────────────────────────────────
+async function discoverChannels() {
+  // Try the plugin installations search endpoint.
+  // If this returns 403/401 the token is installation-scoped; fall back to
+  // a manual channel-ID prompt.
+  let data;
+  try {
+    data = await sbGet("/api/plugins/news/installations/search?limit=100");
+  } catch (err) {
+    // Endpoint may not exist or token may lack access — propagate with context
+    throw new Error("Channel discovery failed: " + err.message +
+      ". If your token is installation-scoped, enter channel IDs manually using ⚙ Settings.");
   }
-  document.getElementById("settings-card").style.display = "none";
-  document.getElementById("settings-close").style.display = "none";
+
+  const installations = data.data ?? data ?? [];
+
+  // For each channel, fetch approximate recipient count from group totals.
+  const channels = await Promise.all(installations.map(async inst => {
+    const id = inst.id;
+    const loc = inst.config?.localization ?? {};
+    const name = Object.values(loc).find(l=>l?.title)?.title ?? inst.name ?? id;
+
+    const groupIds =
+      inst.accessors?.groups?.data?.map(g=>g.id) ??
+      inst.typedAccessorIds?.groupIds ?? [];
+
+    const totals = await Promise.all(groupIds.map(async gid => {
+      try {
+        const g = await sbGet(`/api/groups/${gid}?limit=0`);
+        return g.users?.total ?? 0;
+      } catch { return 0; }
+    }));
+
+    return { id, name, approximateRecipients: totals.reduce((s,n)=>s+n,0) };
+  }));
+
+  channels.sort((a,b) => a.name.localeCompare(b.name));
+  return channels;
+}
+
+// ── Load all posts across all channels ────────────────────────────────────
+async function loadAllPosts(channels) {
+  const results = await Promise.allSettled(channels.map(async ch => {
+    const data = await sbGet(`/api/channels/${encodeURIComponent(ch.id)}/posts?offset=0&limit=50`);
+    return (data.data ?? []).map(p => ({ ...p, channelId: ch.id, channelName: ch.name }));
+  }));
+  const posts = results.flatMap(r => r.status==="fulfilled" ? r.value : []);
+  posts.sort((a,b) => {
+    const ta = +new Date(a.published ?? a.planned ?? a.created ?? 0);
+    const tb = +new Date(b.published ?? b.planned ?? b.created ?? 0);
+    return tb - ta;
+  });
+  return posts;
+}
+
+// ── Main load flow ────────────────────────────────────────────────────────
+async function saveAndLoad() {
+  saveCfg();
+  if (!cfg.url || !cfg.token) { toast("Enter Staffbase URL and API token.", "err"); return; }
+  $("cfg-card").style.display = "none";
+  $("cfg-close").style.display = "none";
   loadPosts();
 }
 
 async function loadPosts() {
-  if (!cfg.url || !cfg.token) {
-    document.getElementById("settings-card").style.display = "block";
-    return;
-  }
-  document.getElementById("posts-card").style.display = "block";
-  document.getElementById("stats-bar").style.display  = "none";
-  document.getElementById("search-input").value = "";
-  document.getElementById("refresh-btn").disabled = true;
-  setArea(loadingHTML("Discovering channels…"));
+  if (!cfg.url || !cfg.token) { $("cfg-card").style.display="block"; return; }
+  $("posts-card").style.display = "block";
+  $("stats").style.display      = "none";
+  $("srch").value               = "";
+  $("ref-btn").disabled         = true;
+  setArea(loading("Discovering channels…"));
 
-  // 1. Discover channels
   let channels;
   try {
-    const data = await post("/api/channels", withCreds());
-    channels = data.channels ?? [];
+    channels = await discoverChannels();
   } catch (err) {
-    setArea(errorHTML("Channel discovery failed", err.message));
-    document.getElementById("refresh-btn").disabled = false;
+    setArea(errBox("Channel discovery failed", err.message));
+    $("ref-btn").disabled = false;
+    return;
+  }
+  if (!channels.length) {
+    setArea(empty("No channels found", "No news channel installations were returned."));
+    $("ref-btn").disabled = false;
     return;
   }
 
-  if (channels.length === 0) {
-    setArea(emptyHTML("No channels found", "No news channel installations were returned."));
-    document.getElementById("refresh-btn").disabled = false;
-    return;
-  }
+  chMap = {};
+  for (const ch of channels) chMap[ch.id] = ch;
 
-  channelMap = {};
-  for (const ch of channels) channelMap[ch.id] = ch;
+  setArea(loading(`Loading posts from ${channels.length} channel(s)…`));
 
-  setArea(loadingHTML(`Loading posts from ${channels.length} channel(s)…`));
-
-  // 2. Load all posts
   try {
-    const names = Object.fromEntries(channels.map(c => [c.id, c.name]));
-    const data  = await post("/api/all-posts", withCreds({
-      channelIds:   channels.map(c => c.id),
-      channelNames: names,
-      limit: 50,
-    }));
-    allPosts = data.posts ?? [];
+    allPosts = await loadAllPosts(channels);
   } catch (err) {
-    setArea(errorHTML("Failed to load posts", err.message));
-    document.getElementById("refresh-btn").disabled = false;
+    setArea(errBox("Failed to load posts", err.message));
+    $("ref-btn").disabled = false;
     return;
   }
 
-  document.getElementById("card-title").textContent =
-    `All Posts — ${channels.length} channel${channels.length !== 1 ? "s" : ""}`;
-
-  applyFilter();
-  renderStats();
-  document.getElementById("refresh-btn").disabled = false;
+  $("card-title").textContent =
+    `All Posts — ${channels.length} channel${channels.length!==1?"s":""}`;
+  applyFilter(); renderStats();
+  $("ref-btn").disabled = false;
 }
 
-// ── Filter + render ───────────────────────────────────────────────────────
-
-function filterPosts() { applyFilter(); }
-
+// ── Filter + table ────────────────────────────────────────────────────────
+function filter() { applyFilter(); }
 function applyFilter() {
-  const q = (document.getElementById("search-input").value ?? "").toLowerCase().trim();
-  filteredPosts = q
-    ? allPosts.filter(p =>
-        getTitle(p).toLowerCase().includes(q) ||
-        (p.channelName ?? "").toLowerCase().includes(q))
+  const q = ($("srch").value||"").toLowerCase().trim();
+  shown = q
+    ? allPosts.filter(p=>title(p).toLowerCase().includes(q)||(p.channelName||"").toLowerCase().includes(q))
     : allPosts;
   renderTable();
 }
-
 function renderStats() {
-  const numChannels = new Set(allPosts.map(p => p.channelId)).size;
-  const disabled    = allPosts.filter(p => !p.acknowledgingEnabled).length;
-  let totalUnread   = 0;
+  const numCh = new Set(allPosts.map(p=>p.channelId)).size;
+  const off   = allPosts.filter(p=>!p.acknowledgingEnabled).length;
+  let unread  = 0;
   for (const p of allPosts) {
     if (!p.acknowledgingEnabled) continue;
-    const ch = channelMap[p.channelId];
-    if (ch) totalUnread += Math.max(0, ch.approximateRecipients - (p.acknowledgements?.total ?? 0));
+    const ch = chMap[p.channelId];
+    if (ch) unread += Math.max(0, ch.approximateRecipients - (p.acknowledgements?.total||0));
   }
-  document.getElementById("stat-posts").textContent    = allPosts.length;
-  document.getElementById("stat-channels").textContent = numChannels;
-  document.getElementById("stat-unread").textContent   = totalUnread;
-  document.getElementById("stat-disabled").textContent = disabled;
-  document.getElementById("stats-bar").style.display   = "flex";
+  $("s-posts").textContent = allPosts.length;
+  $("s-ch").textContent    = numCh;
+  $("s-unread").textContent= unread;
+  $("s-off").textContent   = off;
+  $("stats").style.display = "flex";
 }
-
 function renderTable() {
-  if (filteredPosts.length === 0) {
-    setArea(allPosts.length === 0
-      ? emptyHTML("No posts found", "No posts were returned from any channel.")
-      : emptyHTML("No matching posts", "Try a different search term."));
+  if (!shown.length) {
+    setArea(!allPosts.length
+      ? empty("No posts found","No posts were returned from any channel.")
+      : empty("No matching posts","Try a different search term."));
     return;
   }
+  const rows = shown.map(p => {
+    const t   = title(p);
+    const pub = p.published ?? p.planned;
+    const ack = p.acknowledgements?.total ?? 0;
+    const on  = p.acknowledgingEnabled ?? false;
+    const ch  = chMap[p.channelId];
 
-  const rows = filteredPosts.map(p => {
-    const title    = getTitle(p);
-    const pub      = p.published ?? p.planned;
-    const acked    = p.acknowledgements?.total ?? 0;
-    const enabled  = p.acknowledgingEnabled ?? false;
-    const ch       = channelMap[p.channelId];
-
-    let notAckedHtml = `<span style="color:var(--text-dim)">—</span>`;
-    if (enabled && ch?.approximateRecipients > 0) {
-      const n   = Math.max(0, ch.approximateRecipients - acked);
-      const pct = Math.round((acked / ch.approximateRecipients) * 100);
-      const cls = n === 0 ? "zero" : n <= 3 ? "low" : "high";
-      notAckedHtml = `<div class="not-ack ${cls}">${n}</div><div class="ack-pct">~${pct}% read</div>`;
-    } else if (!enabled) {
-      notAckedHtml = `<span class="pill pill-grey" style="font-size:11px;">N/A</span>`;
+    let naHtml = `<span style="color:var(--text-d)">—</span>`;
+    if (on && ch?.approximateRecipients > 0) {
+      const n   = Math.max(0, ch.approximateRecipients - ack);
+      const pct = Math.round(ack/ch.approximateRecipients*100);
+      const cls = n===0?"zero":n<=3?"low":"high";
+      naHtml = `<div class="na ${cls}">${n}</div><div class="na-pct">~${pct}% read</div>`;
+    } else if (!on) {
+      naHtml = `<span class="pill pill-grey" style="font-size:11px;">N/A</span>`;
     }
-
-    const link = p.links?.detail_view?.href
-      ? `<a href="${esc(p.links.detail_view.href)}" target="_blank" rel="noopener noreferrer"
-           style="color:var(--primary);text-decoration:none;font-size:14px;flex-shrink:0;">↗</a>`
-      : "";
-
+    const lnk = p.links?.detail_view?.href
+      ? `<a href="${x(p.links.detail_view.href)}" target="_blank" rel="noopener noreferrer"
+           style="color:var(--primary);text-decoration:none;flex-shrink:0;">↗</a>` : "";
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block;">${esc(title)}</span>
-        ${link}
+        <span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block;">${x(t)}</span>${lnk}
       </div></td>
-      <td><span class="chip" title="${esc(p.channelName ?? p.channelId)}">${esc(p.channelName ?? p.channelId)}</span></td>
-      <td style="white-space:nowrap;color:var(--text-sec);font-size:12px;">${pub ? fmtDate(pub) : "—"}</td>
-      <td style="font-weight:600;">${aced}</td>
-      <td>${notAckedHtml}</td>
-      <td>${enabled ? '<span class="pill pill-green">On</span>' : '<span class="pill pill-grey">Off</span>'}</td>
-      <td><div class="td-actions">
-        ${!enabled
-          ? `<button class="btn-ghost btn-sm" onclick="enableAck('${esc(p.id)}',this)">Enable</button>`
-          : `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(p.id)}',${JSON.stringify(title).replace(/"/g,"&quot;")})">Details</button>`}
+      <td><span class="chip" title="${x(p.channelName??p.channelId)}">${x(p.channelName??p.channelId)}</span></td>
+      <td style="white-space:nowrap;color:var(--text-m);font-size:12px;">${pub?fmtDate(pub):"—"}</td>
+      <td style="font-weight:600;">${ack}</td>
+      <td>${naHtml}</td>
+      <td>${on?'<span class="pill pill-grn">On</span>':'<span class="pill pill-grey">Off</span>'}</td>
+      <td><div class="acts">
+        ${!on
+          ? `<button class="btn-g btn-sm" onclick="enableAck('${x(p.id)}',this)">Enable</button>`
+          : `<button class="btn-s btn-sm" onclick="viewStatus('${x(p.id)}',${JSON.stringify(t).replace(/"/g,"&quot;")})">Details</button>`}
       </div></td>
     </tr>`;
   }).join("");
-
-  setArea(`<div class="table-wrap"><table>
+  setArea(`<div class="t-wrap"><table>
     <thead><tr>
       <th>Post Title</th><th>Channel</th><th>Published</th>
       <th>Acknowledged</th>
       <th>Not Acknowledged <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;">(approx)</span></th>
       <th>Acknowledging</th><th>Actions</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table></div>`);
+    </tr></thead><tbody>${rows}</tbody></table></div>`);
 }
 
 // ── Enable acknowledging ──────────────────────────────────────────────────
-
 async function enableAck(postId, btn) {
-  btn.disabled = true; btn.textContent = "Enabling…";
+  btn.disabled=true; btn.textContent="Enabling…";
   try {
-    await post("/api/enable-ack", withCreds({ postId }));
-    const p = allPosts.find(x => x.id === postId);
-    if (p) p.acknowledgingEnabled = true;
+    await sbPost(`/api/posts/${postId}`, { acknowledgingEnabled: true });
+    const p = allPosts.find(p=>p.id===postId);
+    if (p) p.acknowledgingEnabled=true;
     applyFilter(); renderStats();
-    toast("Acknowledging enabled.", "success");
-  } catch (err) {
-    toast(err.message, "error");
-    btn.disabled = false; btn.textContent = "Enable";
+    toast("Acknowledging enabled.", "ok");
+  } catch(err) {
+    toast(err.message, "err");
+    btn.disabled=false; btn.textContent="Enable";
   }
 }
 
 // ── Acknowledgement status modal ──────────────────────────────────────────
-
 async function viewStatus(postId, postTitle) {
-  currentStatus = null;
-  openModal(postTitle);
+  curStatus=null; openModal(postTitle);
   try {
-    const data = await post("/api/ack-status", withCreds({ postId }));
-    currentStatus = data;
-    renderModalContent(data);
-  } catch (err) {
-    document.getElementById("modal-loading").innerHTML =
-      `<p style="color:var(--danger);font-weight:600;">Failed to load</p>
-       <p style="color:var(--text-sec);margin-top:6px;">${esc(err.message)}</p>`;
-    toast(err.message, "error");
+    // 1. Post details
+    const post = await sbGet(`/api/posts/${postId}`);
+    const channelId = post.channelID;
+    if (!channelId) throw new Error("Post has no channelID");
+
+    // 2. All acknowledged user IDs (paginated)
+    const ackedIds = new Set();
+    let off=0, PAGE=100;
+    for(;;) {
+      const r = await sbGet(`/api/posts/${postId}/acknowledgements?offset=${off}&limit=${PAGE}`);
+      for (const e of r.data??[]) if(e.userID) ackedIds.add(e.userID);
+      off += (r.data??[]).length;
+      if (off>=(r.total??0)||(r.data??[]).length===0) break;
+    }
+
+    // 3. Channel → groups
+    const ch = await sbGet(`/api/channels/${channelId}`);
+    const groupIds = ch.accessors?.groups?.data?.map(g=>g.id) ?? [];
+
+    // 4. All activated users across groups (exact, deduplicated)
+    const recips = new Map();
+    for (const gid of groupIds) {
+      let go=0;
+      for(;;) {
+        const g = await sbGet(`/api/groups/${gid}?offset=${go}&limit=${PAGE}`);
+        for (const u of g.users?.data??[]) {
+          if (u.status && u.status!=="activated") continue;
+          if (recips.has(u.id)) continue;
+          recips.set(u.id, {
+            firstName: u.firstName??null, lastName: u.lastName??null,
+            email: u.publicEmailAddress ?? u.emails?.find(e=>e.primary)?.value ?? null
+          });
+        }
+        go += (g.users?.data??[]).length;
+        if (go>=(g.users?.total??0)||(g.users?.data??[]).length===0) break;
+      }
+    }
+
+    // 5. Partition
+    const acked=[], notAcked=[];
+    for (const [uid,info] of recips) {
+      (ackedIds.has(uid)?acked:notAcked).push({userId:uid,...info});
+    }
+    const srt=(a,b)=>{
+      const la=(a.lastName??"").toLowerCase(), lb=(b.lastName??"").toLowerCase();
+      if(la!==lb) return la<lb?-1:1;
+      return (a.firstName??"").toLowerCase()<(b.firstName??"").toLowerCase()?-1:1;
+    };
+    acked.sort(srt); notAcked.sort(srt);
+
+    curStatus = {
+      postId,
+      postTitle: Object.values(post.contents??{})[0]?.title ?? postId,
+      postUrl:   post.links?.detail_view?.href ?? null,
+      totalRecipients: recips.size,
+      acknowledgedUsers: acked,
+      notAcknowledgedUsers: notAcked
+    };
+    renderModal(curStatus);
+  } catch(err) {
+    $("m-load").innerHTML =
+      `<p style="color:var(--red);font-weight:600;">Failed to load</p>
+       <p style="color:var(--text-m);margin-top:6px;">${x(err.message)}</p>`;
+    toast(err.message,"err");
   }
 }
 
-function openModal(title) {
-  document.getElementById("modal-post-title").textContent     = title;
-  document.getElementById("modal-loading").style.display      = "block";
-  document.getElementById("modal-loading").innerHTML          = `<div class="spinner"></div><p style="margin-top:12px;">Loading acknowledgement data…</p>`;
-  document.getElementById("modal-content").style.display      = "none";
-  document.getElementById("modal-progress-bar").style.display = "none";
-  document.getElementById("send-btn").style.display           = "none";
-  document.getElementById("ack-modal").classList.remove("hidden");
-  switchTab("unread");
+function openModal(ttl) {
+  $("m-title").textContent = ttl;
+  $("m-load").style.display="block";
+  $("m-load").innerHTML=`<div class="spinner"></div><p style="margin-top:12px;">Loading…</p>`;
+  $("m-body").style.display="none";
+  $("m-prog").style.display="none";
+  $("send-btn").style.display="none";
+  $("modal").classList.remove("hidden");
+  tab("unread");
 }
-
-function renderModalContent(s) {
-  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients } = s;
-  const pct = totalRecipients > 0 ? Math.round((read.length / totalRecipients) * 100) : 0;
-  document.getElementById("modal-progress-bar").style.display = "block";
-  document.getElementById("modal-progress-text").textContent  = `${read.length} of ${totalRecipients} acknowledged (${pct}%)`;
-  document.getElementById("progress-fill").style.width = `${pct}%`;
-  document.getElementById("unread-count").textContent = unread.length;
-  document.getElementById("read-count").textContent   = read.length;
-  document.getElementById("unread-list").innerHTML    = userList(unread, true);
-  document.getElementById("read-list").innerHTML      = userList(read, false);
-  if (unread.length > 0) {
-    document.getElementById("send-btn").style.display = "inline-flex";
-    document.getElementById("send-count").textContent = unread.length;
-  }
-  document.getElementById("modal-loading").style.display = "none";
-  document.getElementById("modal-content").style.display = "flex";
+function renderModal(s) {
+  const {notAcknowledgedUsers:unread, acknowledgedUsers:read, totalRecipients} = s;
+  const pct = totalRecipients>0 ? Math.round(read.length/totalRecipients*100) : 0;
+  $("m-prog").style.display="block";
+  $("m-prog-txt").textContent=`${read.length} of ${totalRecipients} acknowledged (${pct}%)`;
+  $("m-fill").style.width=`${pct}%`;
+  $("c-unread").textContent=unread.length;
+  $("c-read").textContent=read.length;
+  $("l-unread").innerHTML=uList(unread,true);
+  $("l-read").innerHTML=uList(read,false);
+  if (unread.length) { $("send-btn").style.display="inline-flex"; $("send-n").textContent=unread.length; }
+  $("m-load").style.display="none";
+  $("m-body").style.display="flex";
 }
-
-function userList(users, showNoEmail) {
-  if (!users.length) {
-    const msg = showNoEmail ? "Everyone has acknowledged! 🎉" : "No acknowledgements yet.";
-    return `<li style="padding:32px 24px;text-align:center;color:var(--text-sec);">${msg}</li>`;
+function uList(users, showNoEmail) {
+  if(!users.length) {
+    const msg=showNoEmail?"Everyone has acknowledged! 🎉":"No acknowledgements yet.";
+    return `<li style="padding:32px 24px;text-align:center;color:var(--text-m);">${msg}</li>`;
   }
-  return users.map(u => {
-    const name    = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown user";
-    const emailEl = u.email
-      ? `<div class="user-email">${esc(u.email)}</div>`
-      : (showNoEmail ? `<div class="user-no-email">No email — will be skipped</div>` : "");
-    return `<li class="user-item"><div class="user-info"><div class="user-name">${esc(name)}</div>${emailEl}</div></li>`;
+  return users.map(u=>{
+    const name=[u.firstName,u.lastName].filter(Boolean).join(" ")||"Unknown user";
+    const eml=u.email?`<div class="u-email">${x(u.email)}</div>`
+      :(showNoEmail?`<div class="u-no-email">No email — will be skipped</div>`:"");
+    return `<li class="u-item"><div class="u-info"><div class="u-name">${x(name)}</div>${eml}</div></li>`;
   }).join("");
 }
-
-function switchTab(t) {
-  ["unread","read"].forEach(id => {
-    document.getElementById(`tab-${id}`).classList.toggle("active", id === t);
-    document.getElementById(`${id}-list`).style.display = id === t ? "block" : "none";
+function tab(t) {
+  ["unread","read"].forEach(id=>{
+    $(`t-${id}`).classList.toggle("on",id===t);
+    $(`l-${id}`).style.display=id===t?"block":"none";
   });
 }
-
-function maybeCloseModal(e) { if (e.target === document.getElementById("ack-modal")) closeModal(); }
-function closeModal() { document.getElementById("ack-modal").classList.add("hidden"); }
+function maybeClose(e){if(e.target===$("modal"))closeModal();}
+function closeModal(){$("modal").classList.add("hidden");}
 
 // ── Send reminders ────────────────────────────────────────────────────────
-
+// Email send goes through the Vercel proxy (email service may not have CORS)
 async function sendReminders() {
-  if (!currentStatus) return;
+  if (!curStatus) return;
   if (!cfg.emailUrl) {
-    toast("Email service URL not configured in Settings.", "error");
-    document.getElementById("settings-card").style.display = "block";
+    toast("Email service URL not configured in Settings.", "err");
+    $("cfg-card").style.display="block";
     return;
   }
-  const btn = document.getElementById("send-btn");
-  btn.disabled = true; btn.textContent = "Sending…";
+  const btn=$("send-btn");
+  btn.disabled=true; btn.textContent="Sending…";
+  const users = curStatus.notAcknowledgedUsers.filter(u=>u.email);
+  const skipped = curStatus.notAcknowledgedUsers.length - users.length;
+  if (!users.length) { toast(`No recipients have an email address (${skipped} skipped).`,"err"); btn.disabled=false; return; }
   try {
-    const data = await post("/api/send-reminder", withCreds({
-      emailServiceUrl: cfg.emailUrl,
-      postId:    currentStatus.postId,
-      postTitle: currentStatus.postTitle,
-      postUrl:   currentStatus.postUrl,
-      userIds:   currentStatus.notAcknowledgedUsers.map(u => u.userId),
-    }));
-    toast(data.skipped > 0
-      ? `Sent to ${data.sent}, skipped ${data.skipped} (no email).`
-      : `Reminder sent to ${data.sent} recipient(s).`, "success");
+    const res=await fetch("/api/send-reminder",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        emailServiceUrl: cfg.emailUrl,
+        recipients: users,
+        subject: `Reminder: Please acknowledge "${curStatus.postTitle}"`,
+        postUrl:   curStatus.postUrl,
+        postTitle: curStatus.postTitle,
+        postId:    curStatus.postId
+      })
+    });
+    const data=await res.json();
+    if(!res.ok) throw new Error(data.error??`HTTP ${res.status}`);
+    toast(skipped>0?`Sent to ${data.sent}, skipped ${skipped} (no email).`:`Sent to ${data.sent} recipient(s).`,"ok");
     closeModal();
-  } catch (err) {
-    toast(err.message, "error");
+  } catch(err) {
+    toast(err.message,"err");
   } finally {
-    btn.disabled = false;
-    btn.textContent = `Send reminder (${document.getElementById("send-count").textContent})`;
+    btn.disabled=false;
+    btn.textContent=`Send reminder (${$("send-n").textContent})`;
   }
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────
-
-function getTitle(p) {
-  if (!p.contents) return p.id;
-  return Object.values(p.contents).find(l => l?.title)?.title ?? p.id;
-}
-function fmtDate(iso) {
-  return new Date(iso).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
-}
-function esc(s) {
-  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-function setArea(html) { document.getElementById("posts-area").innerHTML = html; }
-function loadingHTML(m) { return `<div class="empty"><div class="spinner"></div><p class="empty-title" style="margin-top:12px;">${esc(m)}</p></div>`; }
-function emptyHTML(t, b)  { return `<div class="empty"><p class="empty-title">${esc(t)}</p><p style="margin-top:6px;">${esc(b)}</p></div>`; }
-function errorHTML(t, d)  { return `<div class="error-box"><strong>${esc(t)}</strong>${esc(d)}</div>`; }
-function toast(msg, type = "") {
-  const el = document.createElement("div");
-  el.className = ["toast", type].filter(Boolean).join(" ");
-  el.textContent = msg;
-  document.getElementById("toast-container").appendChild(el);
-  setTimeout(() => el.remove(), 4500);
+const $=id=>document.getElementById(id);
+function title(p){if(!p.contents)return p.id;return Object.values(p.contents).find(l=>l?.title)?.title??p.id;}
+function fmtDate(iso){return new Date(iso).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"});}
+function x(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function setArea(h){$("area").innerHTML=h;}
+function loading(m){return `<div class="empty"><div class="spinner"></div><p class="empty-t" style="margin-top:12px;">${x(m)}</p></div>`;}
+function empty(t,b){return `<div class="empty"><p class="empty-t">${x(t)}</p><p style="margin-top:6px;">${x(b)}</p></div>`;}
+function errBox(t,d){return `<div class="err-box"><strong>${x(t)}</strong>${x(d)}</div>`;}
+function toast(msg,type=""){
+  const el=document.createElement("div");
+  el.className=["toast",type].filter(Boolean).join(" ");
+  el.textContent=msg;
+  $("toasts").appendChild(el);
+  setTimeout(()=>el.remove(),4500);
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
-loadFromStorage();
-if (cfg.url && cfg.token) {
-  document.getElementById("settings-card").style.display = "none";
-  loadPosts();
-}
+loadCfg();
+if(cfg.url&&cfg.token){$("cfg-card").style.display="none";loadPosts();}
 </script>
 </body>
 </html>
