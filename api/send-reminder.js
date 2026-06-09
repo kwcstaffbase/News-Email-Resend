@@ -1,32 +1,31 @@
 /**
  * POST /api/send-reminder
- * Body: { postId, postTitle, postUrl, userIds: string[] }
+ * Body: { staffbaseUrl, apiToken, emailServiceUrl, postId, postTitle, postUrl, userIds[] }
  *
  * Fetches user details for each userId, then POSTs to the email service.
- * Users with no email address are skipped.
- *
- * Credentials are read from environment variables:
- *   STAFFBASE_URL        e.g. https://yourco.staffbase.com
- *   STAFFBASE_API_TOKEN  Basic auth token
- *   EMAIL_SERVICE_URL    e.g. https://email-service.example.com/api/emails
+ * Users without an email address are skipped (counted in `skipped`).
  */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const staffbaseUrl   = process.env.STAFFBASE_URL;
-  const apiToken       = process.env.STAFFBASE_API_TOKEN;
-  const emailServiceUrl = process.env.EMAIL_SERVICE_URL;
+  const {
+    staffbaseUrl,
+    apiToken,
+    emailServiceUrl,
+    postId,
+    postTitle,
+    postUrl,
+    userIds,
+  } = req.body ?? {};
 
   if (!staffbaseUrl || !apiToken) {
-    return res.status(500).json({ error: "STAFFBASE_URL and STAFFBASE_API_TOKEN environment variables are not set." });
+    return res.status(400).json({ error: "staffbaseUrl and apiToken are required" });
   }
   if (!emailServiceUrl) {
-    return res.status(500).json({ error: "EMAIL_SERVICE_URL environment variable is not set." });
+    return res.status(400).json({ error: "emailServiceUrl is required" });
   }
-
-  const { postId, postTitle, postUrl, userIds } = req.body ?? {};
   if (!postId || !Array.isArray(userIds) || userIds.length === 0) {
     return res.status(400).json({ error: "postId and a non-empty userIds array are required" });
   }
@@ -34,21 +33,21 @@ export default async function handler(req, res) {
   const auth = { headers: { Authorization: `Basic ${apiToken}` } };
 
   try {
-    // Fetch user details in parallel (batched to avoid overwhelming Staffbase)
+    // Fetch user details in batches of 20
     const BATCH = 20;
     const recipients = [];
     for (let i = 0; i < userIds.length; i += BATCH) {
-      const batch = userIds.slice(i, i + BATCH);
       const results = await Promise.allSettled(
-        batch.map(async (uid) => {
+        userIds.slice(i, i + BATCH).map(async (uid) => {
           const r = await fetch(`${staffbaseUrl}/api/users/${uid}`, auth);
           if (!r.ok) return null;
           const u = await r.json();
-          const email =
-            u.publicEmailAddress ??
-            u.emails?.find((e) => e.primary)?.value ??
-            null;
-          return { userId: uid, email, firstName: u.firstName ?? null, lastName: u.lastName ?? null };
+          return {
+            userId: uid,
+            email: u.publicEmailAddress ?? u.emails?.find((e) => e.primary)?.value ?? null,
+            firstName: u.firstName ?? null,
+            lastName:  u.lastName  ?? null,
+          };
         })
       );
       for (const r of results) {
@@ -66,8 +65,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // POST to the email service.
-    // Adjust the payload shape below to match your email service's contract.
+    // POST to email service — adjust payload shape to match your service's contract
     const emailRes = await fetch(emailServiceUrl, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },

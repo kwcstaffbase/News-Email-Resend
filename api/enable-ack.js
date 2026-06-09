@@ -1,26 +1,19 @@
 /**
  * POST /api/enable-ack
- * Body: { postId: string }
+ * Body: { staffbaseUrl, apiToken, postId }
  *
  * Sets acknowledgingEnabled: true on the given post.
- *
- * Credentials are read from environment variables:
- *   STAFFBASE_URL        e.g. https://yourco.staffbase.com
- *   STAFFBASE_API_TOKEN  Basic auth token
  */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const staffbaseUrl = process.env.STAFFBASE_URL;
-  const apiToken     = process.env.STAFFBASE_API_TOKEN;
+  const { staffbaseUrl, apiToken, postId } = req.body ?? {};
 
   if (!staffbaseUrl || !apiToken) {
-    return res.status(500).json({ error: "STAFFBASE_URL and STAFFBASE_API_TOKEN environment variables are not set." });
+    return res.status(400).json({ error: "staffbaseUrl and apiToken are required" });
   }
-
-  const { postId } = req.body ?? {};
   if (!postId) return res.status(400).json({ error: "postId is required" });
 
   try {
@@ -36,7 +29,7 @@ export default async function handler(req, res) {
     if (!upstream.ok) {
       const text = await upstream.text();
       return res.status(upstream.status).json({
-        error: `Staffbase API returned ${upstream.status}`,
+        error: `Staffbase returned ${upstream.status}`,
         detail: text,
       });
     }

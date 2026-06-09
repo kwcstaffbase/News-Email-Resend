@@ -1,43 +1,29 @@
 /**
- * GET /api/all-posts?channelIds=id1,id2&limit=50
+ * POST /api/all-posts
+ * Body: { staffbaseUrl, apiToken, channelIds: string[], channelNames: { [id]: name }, limit? }
  *
  * Fetches posts from all supplied channel IDs in parallel, merges them,
  * and returns sorted by published date descending.
- *
- * Accepts an optional x-channel-names header (JSON map channelId → name)
- * to annotate each post with its channel's display name.
- *
- * Credentials are read from environment variables:
- *   STAFFBASE_URL        e.g. https://yourco.staffbase.com
- *   STAFFBASE_API_TOKEN  Basic auth token
  */
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const staffbaseUrl = process.env.STAFFBASE_URL;
-  const apiToken     = process.env.STAFFBASE_API_TOKEN;
+  const { staffbaseUrl, apiToken, channelIds, channelNames = {}, limit = 50 } = req.body ?? {};
 
   if (!staffbaseUrl || !apiToken) {
-    return res.status(500).json({ error: "STAFFBASE_URL and STAFFBASE_API_TOKEN environment variables are not set." });
+    return res.status(400).json({ error: "staffbaseUrl and apiToken are required" });
+  }
+  if (!Array.isArray(channelIds) || channelIds.length === 0) {
+    return res.status(400).json({ error: "channelIds array is required" });
   }
 
-  const { channelIds, limit = "50" } = req.query;
-  if (!channelIds) return res.status(400).json({ error: "channelIds is required" });
-
-  let channelNameMap = {};
-  try {
-    const raw = req.headers["x-channel-names"];
-    if (raw) channelNameMap = JSON.parse(raw);
-  } catch { /* ignore */ }
-
-  const ids = channelIds.split(",").map((s) => s.trim()).filter(Boolean);
   const perChannelLimit = Math.min(Number(limit) || 50, 100);
   const auth = { headers: { Authorization: `Basic ${apiToken}` } };
 
   const results = await Promise.allSettled(
-    ids.map(async (channelId) => {
+    channelIds.map(async (channelId) => {
       const url =
         `${staffbaseUrl}/api/channels/${encodeURIComponent(channelId)}/posts` +
         `?offset=0&limit=${perChannelLimit}`;
@@ -47,7 +33,7 @@ export default async function handler(req, res) {
       return (body.data ?? []).map((post) => ({
         ...post,
         channelId,
-        channelName: channelNameMap[channelId] ?? channelId,
+        channelName: channelNames[channelId] ?? channelId,
       }));
     })
   );

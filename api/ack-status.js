@@ -1,27 +1,21 @@
 /**
- * GET /api/ack-status?postId=
+ * POST /api/ack-status
+ * Body: { staffbaseUrl, apiToken, postId }
  *
  * Returns the full acknowledgement breakdown for a post:
  *   { postId, postTitle, postUrl, acknowledgingEnabled,
  *     totalRecipients, acknowledgedUsers, notAcknowledgedUsers }
- *
- * Credentials are read from environment variables:
- *   STAFFBASE_URL        e.g. https://yourco.staffbase.com
- *   STAFFBASE_API_TOKEN  Basic auth token
  */
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const staffbaseUrl = process.env.STAFFBASE_URL;
-  const apiToken     = process.env.STAFFBASE_API_TOKEN;
+  const { staffbaseUrl, apiToken, postId } = req.body ?? {};
 
   if (!staffbaseUrl || !apiToken) {
-    return res.status(500).json({ error: "STAFFBASE_URL and STAFFBASE_API_TOKEN environment variables are not set." });
+    return res.status(400).json({ error: "staffbaseUrl and apiToken are required" });
   }
-
-  const { postId } = req.query;
   if (!postId) return res.status(400).json({ error: "postId is required" });
 
   const auth = { headers: { Authorization: `Basic ${apiToken}` } };
@@ -93,7 +87,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 5. Partition into acknowledged / not-acknowledged
+    // 5. Partition
     const acknowledgedUsers    = [];
     const notAcknowledgedUsers = [];
     for (const [userId, info] of recipients) {

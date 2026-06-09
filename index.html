@@ -13,11 +13,10 @@
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
       --text: #0f172a;
-      --text-secondary: #64748b;
-      --text-disabled: #94a3b8;
+      --text-sec: #64748b;
+      --text-dim: #94a3b8;
       --primary: #6c00ff;
-      --primary-hover: #5800d4;
-      --primary-text: #ffffff;
+      --primary-h: #5800d4;
       --success: #16a34a;
       --success-bg: #dcfce7;
       --orange: #ea580c;
@@ -25,209 +24,112 @@
       --danger: #dc2626;
       --danger-bg: #fef2f2;
       --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow: 0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
       --shadow-lg: 0 10px 28px rgba(0,0,0,.14);
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
     /* ── Header ── */
-    .app-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      gap: 16px;
-    }
+    .app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 10; gap: 16px; }
     .app-header h1 { font-size: 16px; font-weight: 600; }
-    .app-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+
+    /* ── Main ── */
+    .app-main { max-width: 1200px; margin: 0 auto; padding: 24px 16px; display: flex; flex-direction: column; gap: 20px; }
 
     /* ── Card ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    .card-header {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
     .card-header h2 { font-size: 14px; font-weight: 600; }
+    .card-body { padding: 20px; }
 
     /* ── Buttons ── */
-    button {
-      font-family: inherit; font-size: 13px; font-weight: 500;
-      cursor: pointer; border: none; border-radius: 6px;
-      padding: 7px 14px;
-      transition: background 0.15s, opacity 0.15s;
-      white-space: nowrap;
-      display: inline-flex; align-items: center; gap: 5px;
-    }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: var(--primary-text); }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
-    .btn-secondary {
-      background: transparent; color: var(--text);
-      border: 1px solid var(--border-strong);
-    }
+    button { font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; border: none; border-radius: 6px; padding: 7px 14px; transition: background .15s, opacity .15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-h); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border-strong); }
     .btn-secondary:hover:not(:disabled) { background: var(--bg); }
     .btn-ghost { background: transparent; color: var(--primary); padding: 5px 10px; }
     .btn-ghost:hover:not(:disabled) { background: #f3e8ff; }
     .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .btn-link { background: none; border: none; color: var(--primary); font-size: 12px; padding: 0; text-decoration: underline; cursor: pointer; display: inline; }
+
+    /* ── Form ── */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 11px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; letter-spacing: .05em; }
+    input[type=text], input[type=url], input[type=password] { font-family: inherit; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 6px; outline: none; width: 100%; transition: border-color .15s; background: var(--surface); color: var(--text); }
+    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+
+    /* ── Creds status dot ── */
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; display: inline-block; }
+    .dot.ok { background: var(--success); }
 
     /* ── Stats bar ── */
-    .stats-bar {
-      display: flex; gap: 24px;
-      padding: 12px 20px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
+    .stats-bar { display: flex; gap: 24px; padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
     .stat { display: flex; flex-direction: column; gap: 2px; }
     .stat-val { font-size: 22px; font-weight: 700; line-height: 1; }
-    .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
-    .stat-val.danger  { color: var(--danger); }
-    .stat-val.success { color: var(--success); }
+    .stat-label { font-size: 11px; color: var(--text-sec); text-transform: uppercase; letter-spacing: .04em; }
+    .danger { color: var(--danger); }
+    .success { color: var(--success); }
 
     /* ── Table ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th {
-      text-align: left; padding: 10px 16px;
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap; background: #fafafa;
-    }
+    thead th { text-align: left; padding: 10px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-sec); border-bottom: 1px solid var(--border); white-space: nowrap; background: #fafafa; }
     tbody tr { border-bottom: 1px solid var(--border); }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #fafafa; }
     td { padding: 11px 16px; vertical-align: middle; }
     .td-actions { display: flex; gap: 6px; align-items: center; }
 
-    /* ── Chips / pills ── */
-    .pill {
-      display: inline-block; padding: 2px 8px;
-      border-radius: 99px; font-size: 11px; font-weight: 600;
-    }
+    /* ── Pills ── */
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
     .pill-green  { background: var(--success-bg); color: var(--success); }
-    .pill-grey   { background: #f1f5f9; color: var(--text-secondary); }
-    .channel-chip {
-      display: inline-block; padding: 2px 8px;
-      border-radius: 4px; font-size: 11px;
-      background: #ede9fe; color: #6d28d9; font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 180px;
-    }
+    .pill-grey   { background: #f1f5f9; color: var(--text-sec); }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; background: #ede9fe; color: #6d28d9; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
 
-    /* ── Not-acknowledged count ── */
+    /* ── Not-acknowledged ── */
     .not-ack { font-weight: 700; font-size: 15px; }
     .not-ack.zero { color: var(--success); }
     .not-ack.low  { color: var(--orange); }
     .not-ack.high { color: var(--danger); }
-    .ack-pct { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+    .ack-pct { font-size: 11px; color: var(--text-sec); margin-top: 1px; }
 
-    /* ── Empty / loading ── */
-    .empty { text-align: center; padding: 56px 24px; color: var(--text-secondary); }
+    /* ── Empty / loading / error ── */
+    .empty { text-align: center; padding: 56px 24px; color: var(--text-sec); }
     .empty-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 6px; }
-    .spinner {
-      width: 20px; height: 20px;
-      border: 2px solid var(--border);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-    }
+    .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Error banner ── */
-    .error-banner {
-      margin: 20px; padding: 14px 16px;
-      background: var(--danger-bg);
-      border: 1px solid #fecaca;
-      border-radius: var(--radius);
-      color: var(--danger);
-      font-size: 13px;
-    }
-    .error-banner strong { display: block; margin-bottom: 4px; }
+    .error-box { margin: 16px; padding: 14px 16px; background: var(--danger-bg); border: 1px solid #fecaca; border-radius: var(--radius); color: var(--danger); font-size: 13px; }
+    .error-box strong { display: block; margin-bottom: 4px; }
 
     /* ── Toolbar ── */
-    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .search-input {
-      padding: 7px 12px;
-      border: 1px solid var(--border-strong);
-      border-radius: 6px; font-size: 13px; font-family: inherit;
-      outline: none; width: 220px;
-      background: var(--surface); color: var(--text);
-    }
+    .search-input { padding: 7px 12px; border: 1px solid var(--border-strong); border-radius: 6px; font-size: 13px; font-family: inherit; outline: none; width: 220px; background: var(--surface); color: var(--text); }
     .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,0,255,.12); }
 
     /* ── Toast ── */
-    #toast-container {
-      position: fixed; bottom: 24px; right: 24px;
-      display: flex; flex-direction: column; gap: 8px; z-index: 1000;
-    }
-    .toast {
-      background: var(--text); color: #fff;
-      padding: 10px 16px; border-radius: 8px;
-      font-size: 13px; max-width: 340px;
-      box-shadow: var(--shadow-lg);
-      animation: slide-in 0.2s ease;
-    }
+    #toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
+    .toast { background: var(--text); color: #fff; padding: 10px 16px; border-radius: 8px; font-size: 13px; max-width: 340px; box-shadow: var(--shadow-lg); animation: slide-in .2s ease; }
     .toast.success { background: var(--success); }
     .toast.error   { background: var(--danger); }
     @keyframes slide-in { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 
     /* ── Modal ── */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,.45);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100; padding: 16px;
-    }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
     .modal-backdrop.hidden { display: none; }
-    .modal {
-      background: var(--surface); border-radius: var(--radius);
-      width: 100%; max-width: 560px; max-height: 90vh;
-      display: flex; flex-direction: column;
-      box-shadow: var(--shadow-lg);
-    }
+    .modal { background: var(--surface); border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); }
     .modal-header { padding: 20px 24px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .modal-header h2 { font-size: 15px; font-weight: 600; }
-    .modal-header p  { font-size: 12px; color: var(--text-secondary); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .modal-header p { font-size: 12px; color: var(--text-sec); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .modal-progress { padding: 12px 24px; border-bottom: 1px solid var(--border); background: #fafafa; flex-shrink: 0; }
-    .modal-progress p { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
-    .progress-bar  { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width 0.3s; }
+    .modal-progress p { font-size: 12px; color: var(--text-sec); margin-bottom: 6px; }
+    .progress-bar { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--success); border-radius: 99px; transition: width .3s; }
     .modal-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .tab-btn {
-      flex: 1; padding: 10px 16px;
-      font-size: 13px; font-weight: 500;
-      background: none; border: none; border-radius: 0;
-      border-bottom: 2px solid transparent;
-      cursor: pointer; color: var(--text-secondary);
-      transition: color 0.15s, border-color 0.15s;
-    }
+    .tab-btn { flex: 1; padding: 10px 16px; font-size: 13px; font-weight: 500; background: none; border: none; border-radius: 0; border-bottom: 2px solid transparent; cursor: pointer; color: var(--text-sec); transition: color .15s, border-color .15s; }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     .tab-btn:hover:not(.active) { color: var(--text); background: var(--bg); }
     .modal-body { flex: 1; overflow-y: auto; min-height: 0; }
@@ -235,8 +137,8 @@
     .user-item:last-child { border-bottom: none; }
     .user-info { min-width: 0; flex: 1; }
     .user-name  { font-weight: 500; font-size: 13px; }
-    .user-email { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .user-no-email { font-size: 12px; color: var(--text-disabled); font-style: italic; }
+    .user-email { font-size: 12px; color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-no-email { font-size: 12px; color: var(--text-dim); font-style: italic; }
     .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
   </style>
 </head>
@@ -244,43 +146,64 @@
 
 <header class="app-header">
   <h1>📰 News Acknowledgement Tracker</h1>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <input type="text" class="search-input" id="search-input"
-      placeholder="Search posts or channels…" oninput="filterPosts()" />
-    <button class="btn-secondary btn-sm" onclick="loadAll()" id="refresh-btn">⟳ Refresh</button>
+  <div class="header-right">
+    <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-sec);">
+      <span class="dot" id="creds-dot"></span>
+      <span id="creds-label">Not configured</span>
+    </span>
+    <button class="btn-secondary btn-sm" onclick="toggleSettings()">⚙ Settings</button>
   </div>
 </header>
 
 <main class="app-main">
-  <div class="card" id="main-card">
+
+  <!-- Settings card (hidden once configured) -->
+  <div class="card" id="settings-card">
     <div class="card-header">
-      <h2 id="card-title">All Posts</h2>
+      <h2>Settings</h2>
+      <button class="btn-ghost btn-sm" id="settings-close" onclick="toggleSettings()" style="display:none;">✕ Close</button>
     </div>
-    <div id="stats-bar" class="stats-bar" style="display:none;">
-      <div class="stat">
-        <span class="stat-val" id="stat-posts">—</span>
-        <span class="stat-label">Posts</span>
+    <div class="card-body">
+      <div class="grid-3">
+        <div class="field">
+          <label for="inp-url">Staffbase Instance URL</label>
+          <input type="url" id="inp-url" placeholder="https://yourco.staffbase.com" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="inp-token">API Token</label>
+          <input type="password" id="inp-token" placeholder="Base64 encoded token" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label for="inp-email">Email Service URL</label>
+          <input type="url" id="inp-email" placeholder="https://email-service.example.com/api/emails" autocomplete="off" />
+        </div>
       </div>
-      <div class="stat">
-        <span class="stat-val" id="stat-channels">—</span>
-        <span class="stat-label">Channels</span>
-      </div>
-      <div class="stat">
-        <span class="stat-val danger" id="stat-unread">—</span>
-        <span class="stat-label">Total unread</span>
-      </div>
-      <div class="stat">
-        <span class="stat-val" id="stat-disabled">—</span>
-        <span class="stat-label">Acknowledging off</span>
-      </div>
-    </div>
-    <div id="posts-area">
-      <div class="empty">
-        <div class="spinner"></div>
-        <p class="empty-title" style="margin-top:12px;">Discovering channels…</p>
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="saveAndLoad()">Save &amp; Load Posts</button>
+        <button class="btn-secondary" onclick="clearSettings()">Clear</button>
+        <span style="font-size:12px;color:var(--text-sec);">Stored in <code>sessionStorage</code> — cleared when you close this tab.</span>
       </div>
     </div>
   </div>
+
+  <!-- Posts card -->
+  <div class="card" id="posts-card" style="display:none;">
+    <div class="card-header">
+      <h2 id="card-title">All Posts</h2>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input type="text" class="search-input" id="search-input" placeholder="Search posts or channels…" oninput="filterPosts()" />
+        <button class="btn-secondary btn-sm" id="refresh-btn" onclick="loadPosts()">⟳ Refresh</button>
+      </div>
+    </div>
+    <div id="stats-bar" class="stats-bar" style="display:none;">
+      <div class="stat"><span class="stat-val" id="stat-posts">—</span><span class="stat-label">Posts</span></div>
+      <div class="stat"><span class="stat-val" id="stat-channels">—</span><span class="stat-label">Channels</span></div>
+      <div class="stat"><span class="stat-val danger" id="stat-unread">—</span><span class="stat-label">Total unread</span></div>
+      <div class="stat"><span class="stat-val" id="stat-disabled">—</span><span class="stat-label">Acknowledging off</span></div>
+    </div>
+    <div id="posts-area"></div>
+  </div>
+
 </main>
 
 <!-- Acknowledgement detail modal -->
@@ -300,12 +223,8 @@
     </div>
     <div id="modal-content" style="display:none;flex-direction:column;flex:1;min-height:0;">
       <div class="modal-tabs">
-        <button class="tab-btn active" id="tab-unread" onclick="switchTab('unread')">
-          Not acknowledged (<span id="unread-count">0</span>)
-        </button>
-        <button class="tab-btn" id="tab-read" onclick="switchTab('read')">
-          Acknowledged (<span id="read-count">0</span>)
-        </button>
+        <button class="tab-btn active" id="tab-unread" onclick="switchTab('unread')">Not acknowledged (<span id="unread-count">0</span>)</button>
+        <button class="tab-btn"        id="tab-read"   onclick="switchTab('read')">Acknowledged (<span id="read-count">0</span>)</button>
       </div>
       <div class="modal-body">
         <ul id="unread-list" style="list-style:none;"></ul>
@@ -314,9 +233,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">Close</button>
-      <button class="btn-primary" id="send-btn" style="display:none;" onclick="sendReminders()">
-        Send reminder (<span id="send-count">0</span>)
-      </button>
+      <button class="btn-primary" id="send-btn" style="display:none;" onclick="sendReminders()">Send reminder (<span id="send-count">0</span>)</button>
     </div>
   </div>
 </div>
@@ -324,34 +241,110 @@
 <div id="toast-container"></div>
 
 <script>
-let allPosts      = [];
-let filteredPosts = [];
-let channelMap    = {};  // channelId → { name, approximateRecipients }
-let currentStatus = null;
+// ── State ─────────────────────────────────────────────────────────────────
+let cfg = { url: "", token: "", emailUrl: "" };
+let allPosts = [], filteredPosts = [], channelMap = {}, currentStatus = null;
 
-// ── Load ─────────────────────────────────────────────────────────────────
+// ── Settings ──────────────────────────────────────────────────────────────
 
-async function loadAll() {
-  document.getElementById("refresh-btn").disabled = true;
-  document.getElementById("stats-bar").style.display = "none";
+function loadFromStorage() {
+  cfg.url      = sessionStorage.getItem("sb_url")       ?? "";
+  cfg.token    = sessionStorage.getItem("sb_token")     ?? "";
+  cfg.emailUrl = sessionStorage.getItem("sb_email_url") ?? "";
+  document.getElementById("inp-url").value   = cfg.url;
+  document.getElementById("inp-token").value = cfg.token;
+  document.getElementById("inp-email").value = cfg.emailUrl;
+  updateDot();
+}
+
+function saveSettings() {
+  cfg.url      = document.getElementById("inp-url").value.trim();
+  cfg.token    = document.getElementById("inp-token").value.trim();
+  cfg.emailUrl = document.getElementById("inp-email").value.trim();
+  sessionStorage.setItem("sb_url",       cfg.url);
+  sessionStorage.setItem("sb_token",     cfg.token);
+  sessionStorage.setItem("sb_email_url", cfg.emailUrl);
+  updateDot();
+}
+
+function clearSettings() {
+  ["sb_url","sb_token","sb_email_url"].forEach(k => sessionStorage.removeItem(k));
+  cfg = { url: "", token: "", emailUrl: "" };
+  ["inp-url","inp-token","inp-email"].forEach(id => { document.getElementById(id).value = ""; });
+  updateDot();
+  allPosts = []; filteredPosts = []; channelMap = {};
+  document.getElementById("posts-card").style.display = "none";
+  toast("Settings cleared.");
+}
+
+function updateDot() {
+  const ok = Boolean(cfg.url && cfg.token);
+  document.getElementById("creds-dot").className      = "dot" + (ok ? " ok" : "");
+  document.getElementById("creds-label").textContent  = ok ? "Credentials configured" : "Not configured";
+}
+
+function toggleSettings() {
+  const card  = document.getElementById("settings-card");
+  const close = document.getElementById("settings-close");
+  const open  = card.style.display === "none";
+  card.style.display  = open ? "block" : "none";
+  close.style.display = open ? "inline-flex" : "none";
+}
+
+// ── Credentials injected into every API call body ─────────────────────────
+// All requests are POST; credentials travel in the JSON body — never as headers.
+function withCreds(extra) {
+  return { staffbaseUrl: cfg.url, apiToken: cfg.token, ...extra };
+}
+
+async function post(path, body) {
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+  return data;
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────
+
+async function saveAndLoad() {
+  saveSettings();
+  if (!cfg.url || !cfg.token) {
+    toast("Enter your Staffbase URL and API token.", "error");
+    return;
+  }
+  document.getElementById("settings-card").style.display = "none";
+  document.getElementById("settings-close").style.display = "none";
+  loadPosts();
+}
+
+async function loadPosts() {
+  if (!cfg.url || !cfg.token) {
+    document.getElementById("settings-card").style.display = "block";
+    return;
+  }
+  document.getElementById("posts-card").style.display = "block";
+  document.getElementById("stats-bar").style.display  = "none";
   document.getElementById("search-input").value = "";
-  setPostsArea(loadingHTML("Discovering channels…"));
+  document.getElementById("refresh-btn").disabled = true;
+  setArea(loadingHTML("Discovering channels…"));
 
   // 1. Discover channels
   let channels;
   try {
-    const res  = await fetch("/api/channels");
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    const data = await post("/api/channels", withCreds());
     channels = data.channels ?? [];
   } catch (err) {
-    setPostsArea(errorHTML("Channel discovery failed", err.message));
+    setArea(errorHTML("Channel discovery failed", err.message));
     document.getElementById("refresh-btn").disabled = false;
     return;
   }
 
   if (channels.length === 0) {
-    setPostsArea(emptyHTML("No channels found", "No news channel installations were returned."));
+    setArea(emptyHTML("No channels found", "No news channel installations were returned."));
     document.getElementById("refresh-btn").disabled = false;
     return;
   }
@@ -359,22 +352,19 @@ async function loadAll() {
   channelMap = {};
   for (const ch of channels) channelMap[ch.id] = ch;
 
-  const channelIds   = channels.map(c => c.id).join(",");
-  const channelNames = Object.fromEntries(channels.map(c => [c.id, c.name]));
-
-  setPostsArea(loadingHTML(`Loading posts from ${channels.length} channel(s)…`));
+  setArea(loadingHTML(`Loading posts from ${channels.length} channel(s)…`));
 
   // 2. Load all posts
   try {
-    const res  = await fetch(
-      `/api/all-posts?channelIds=${encodeURIComponent(channelIds)}&limit=50`,
-      { headers: { "x-channel-names": JSON.stringify(channelNames) } }
-    );
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    const names = Object.fromEntries(channels.map(c => [c.id, c.name]));
+    const data  = await post("/api/all-posts", withCreds({
+      channelIds:   channels.map(c => c.id),
+      channelNames: names,
+      limit: 50,
+    }));
     allPosts = data.posts ?? [];
   } catch (err) {
-    setPostsArea(errorHTML("Failed to load posts", err.message));
+    setArea(errorHTML("Failed to load posts", err.message));
     document.getElementById("refresh-btn").disabled = false;
     return;
   }
@@ -395,131 +385,100 @@ function applyFilter() {
   const q = (document.getElementById("search-input").value ?? "").toLowerCase().trim();
   filteredPosts = q
     ? allPosts.filter(p =>
-        getPostTitle(p).toLowerCase().includes(q) ||
-        (p.channelName ?? "").toLowerCase().includes(q)
-      )
+        getTitle(p).toLowerCase().includes(q) ||
+        (p.channelName ?? "").toLowerCase().includes(q))
     : allPosts;
   renderTable();
 }
 
 function renderStats() {
-  const totalPosts    = allPosts.length;
-  const numChannels   = new Set(allPosts.map(p => p.channelId)).size;
-  const ackDisabled   = allPosts.filter(p => !p.acknowledgingEnabled).length;
-
-  let totalUnread = 0;
-  for (const post of allPosts) {
-    if (!post.acknowledgingEnabled) continue;
-    const ch = channelMap[post.channelId];
-    if (!ch) continue;
-    totalUnread += Math.max(0, ch.approximateRecipients - (post.acknowledgements?.total ?? 0));
+  const numChannels = new Set(allPosts.map(p => p.channelId)).size;
+  const disabled    = allPosts.filter(p => !p.acknowledgingEnabled).length;
+  let totalUnread   = 0;
+  for (const p of allPosts) {
+    if (!p.acknowledgingEnabled) continue;
+    const ch = channelMap[p.channelId];
+    if (ch) totalUnread += Math.max(0, ch.approximateRecipients - (p.acknowledgements?.total ?? 0));
   }
-
-  document.getElementById("stat-posts").textContent    = totalPosts;
+  document.getElementById("stat-posts").textContent    = allPosts.length;
   document.getElementById("stat-channels").textContent = numChannels;
   document.getElementById("stat-unread").textContent   = totalUnread;
-  document.getElementById("stat-disabled").textContent = ackDisabled;
+  document.getElementById("stat-disabled").textContent = disabled;
   document.getElementById("stats-bar").style.display   = "flex";
 }
 
 function renderTable() {
   if (filteredPosts.length === 0) {
-    setPostsArea(
-      allPosts.length === 0
-        ? emptyHTML("No posts found", "No posts were returned from any channel.")
-        : emptyHTML("No matching posts", "Try a different search term.")
-    );
+    setArea(allPosts.length === 0
+      ? emptyHTML("No posts found", "No posts were returned from any channel.")
+      : emptyHTML("No matching posts", "Try a different search term."));
     return;
   }
 
-  const rows = filteredPosts.map(post => {
-    const title      = getPostTitle(post);
-    const published  = post.published ?? post.planned;
-    const ackCount   = post.acknowledgements?.total ?? 0;
-    const ackEnabled = post.acknowledgingEnabled ?? false;
-    const postUrl    = post.links?.detail_view?.href;
-    const ch         = channelMap[post.channelId];
+  const rows = filteredPosts.map(p => {
+    const title    = getTitle(p);
+    const pub      = p.published ?? p.planned;
+    const acked    = p.acknowledgements?.total ?? 0;
+    const enabled  = p.acknowledgingEnabled ?? false;
+    const ch       = channelMap[p.channelId];
 
-    // Not-acknowledged count
-    let notAckedHtml = '<span style="color:var(--text-disabled)">—</span>';
-    if (ackEnabled && ch?.approximateRecipients > 0) {
-      const notAcked = Math.max(0, ch.approximateRecipients - ackCount);
-      const pct      = Math.round((ackCount / ch.approximateRecipients) * 100);
-      const cls      = notAcked === 0 ? "zero" : notAcked <= 3 ? "low" : "high";
-      notAckedHtml   = `<div class="not-ack ${cls}">${notAcked}</div><div class="ack-pct">~${pct}% read</div>`;
-    } else if (!ackEnabled) {
-      notAckedHtml = '<span class="pill pill-grey" style="font-size:11px;">N/A</span>';
+    let notAckedHtml = `<span style="color:var(--text-dim)">—</span>`;
+    if (enabled && ch?.approximateRecipients > 0) {
+      const n   = Math.max(0, ch.approximateRecipients - acked);
+      const pct = Math.round((acked / ch.approximateRecipients) * 100);
+      const cls = n === 0 ? "zero" : n <= 3 ? "low" : "high";
+      notAckedHtml = `<div class="not-ack ${cls}">${n}</div><div class="ack-pct">~${pct}% read</div>`;
+    } else if (!enabled) {
+      notAckedHtml = `<span class="pill pill-grey" style="font-size:11px;">N/A</span>`;
     }
 
-    const extLink = postUrl
-      ? `<a href="${esc(postUrl)}" target="_blank" rel="noopener noreferrer"
+    const link = p.links?.detail_view?.href
+      ? `<a href="${esc(p.links.detail_view.href)}" target="_blank" rel="noopener noreferrer"
            style="color:var(--primary);text-decoration:none;font-size:14px;flex-shrink:0;">↗</a>`
       : "";
 
     return `<tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block;">${esc(title)}</span>
-          ${extLink}
-        </div>
-      </td>
-      <td><span class="channel-chip" title="${esc(post.channelName ?? post.channelId)}">${esc(post.channelName ?? post.channelId)}</span></td>
-      <td style="white-space:nowrap;color:var(--text-secondary);font-size:12px;">${published ? fmtDate(published) : "—"}</td>
-      <td style="font-weight:600;">${ackCount}</td>
+      <td><div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:block;">${esc(title)}</span>
+        ${link}
+      </div></td>
+      <td><span class="chip" title="${esc(p.channelName ?? p.channelId)}">${esc(p.channelName ?? p.channelId)}</span></td>
+      <td style="white-space:nowrap;color:var(--text-sec);font-size:12px;">${pub ? fmtDate(pub) : "—"}</td>
+      <td style="font-weight:600;">${aced}</td>
       <td>${notAckedHtml}</td>
-      <td>${ackEnabled ? '<span class="pill pill-green">On</span>' : '<span class="pill pill-grey">Off</span>'}</td>
-      <td>
-        <div class="td-actions">
-          ${!ackEnabled
-            ? `<button class="btn-ghost btn-sm" onclick="enableAcknowledging('${esc(post.id)}', this)">Enable</button>`
-            : `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(post.id)}', ${JSON.stringify(title).replace(/"/g,"&quot;")})">Details</button>`
-          }
-        </div>
-      </td>
+      <td>${enabled ? '<span class="pill pill-green">On</span>' : '<span class="pill pill-grey">Off</span>'}</td>
+      <td><div class="td-actions">
+        ${!enabled
+          ? `<button class="btn-ghost btn-sm" onclick="enableAck('${esc(p.id)}',this)">Enable</button>`
+          : `<button class="btn-secondary btn-sm" onclick="viewStatus('${esc(p.id)}',${JSON.stringify(title).replace(/"/g,"&quot;")})">Details</button>`}
+      </div></td>
     </tr>`;
   }).join("");
 
-  setPostsArea(`
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Post Title</th>
-            <th>Channel</th>
-            <th>Published</th>
-            <th>Acknowledged</th>
-            <th>Not Acknowledged <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;">(approx)</span></th>
-            <th>Acknowledging</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`);
+  setArea(`<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Post Title</th><th>Channel</th><th>Published</th>
+      <th>Acknowledged</th>
+      <th>Not Acknowledged <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;">(approx)</span></th>
+      <th>Acknowledging</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`);
 }
 
 // ── Enable acknowledging ──────────────────────────────────────────────────
 
-async function enableAcknowledging(postId, btn) {
-  btn.disabled = true;
-  btn.textContent = "Enabling…";
+async function enableAck(postId, btn) {
+  btn.disabled = true; btn.textContent = "Enabling…";
   try {
-    const res  = await fetch("/api/enable-ack", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ postId }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-    const post = allPosts.find(p => p.id === postId);
-    if (post) post.acknowledgingEnabled = true;
-    applyFilter();
-    renderStats();
+    await post("/api/enable-ack", withCreds({ postId }));
+    const p = allPosts.find(x => x.id === postId);
+    if (p) p.acknowledgingEnabled = true;
+    applyFilter(); renderStats();
     toast("Acknowledging enabled.", "success");
   } catch (err) {
     toast(err.message, "error");
-    btn.disabled = false;
-    btn.textContent = "Enable";
+    btn.disabled = false; btn.textContent = "Enable";
   }
 }
 
@@ -529,24 +488,21 @@ async function viewStatus(postId, postTitle) {
   currentStatus = null;
   openModal(postTitle);
   try {
-    const res  = await fetch(`/api/ack-status?postId=${encodeURIComponent(postId)}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
+    const data = await post("/api/ack-status", withCreds({ postId }));
     currentStatus = data;
     renderModalContent(data);
   } catch (err) {
     document.getElementById("modal-loading").innerHTML =
       `<p style="color:var(--danger);font-weight:600;">Failed to load</p>
-       <p style="color:var(--text-secondary);margin-top:6px;">${esc(err.message)}</p>`;
+       <p style="color:var(--text-sec);margin-top:6px;">${esc(err.message)}</p>`;
     toast(err.message, "error");
   }
 }
 
-function openModal(postTitle) {
-  document.getElementById("modal-post-title").textContent     = postTitle;
+function openModal(title) {
+  document.getElementById("modal-post-title").textContent     = title;
   document.getElementById("modal-loading").style.display      = "block";
-  document.getElementById("modal-loading").innerHTML          =
-    `<div class="spinner"></div><p style="margin-top:12px;">Loading acknowledgement data…</p>`;
+  document.getElementById("modal-loading").innerHTML          = `<div class="spinner"></div><p style="margin-top:12px;">Loading acknowledgement data…</p>`;
   document.getElementById("modal-content").style.display      = "none";
   document.getElementById("modal-progress-bar").style.display = "none";
   document.getElementById("send-btn").style.display           = "none";
@@ -554,33 +510,28 @@ function openModal(postTitle) {
   switchTab("unread");
 }
 
-function renderModalContent(status) {
-  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients } = status;
+function renderModalContent(s) {
+  const { notAcknowledgedUsers: unread, acknowledgedUsers: read, totalRecipients } = s;
   const pct = totalRecipients > 0 ? Math.round((read.length / totalRecipients) * 100) : 0;
-
   document.getElementById("modal-progress-bar").style.display = "block";
-  document.getElementById("modal-progress-text").textContent  =
-    `${read.length} of ${totalRecipients} recipients acknowledged (${pct}%)`;
+  document.getElementById("modal-progress-text").textContent  = `${read.length} of ${totalRecipients} acknowledged (${pct}%)`;
   document.getElementById("progress-fill").style.width = `${pct}%`;
-
   document.getElementById("unread-count").textContent = unread.length;
   document.getElementById("read-count").textContent   = read.length;
-  document.getElementById("unread-list").innerHTML    = renderUserList(unread, true);
-  document.getElementById("read-list").innerHTML      = renderUserList(read, false);
-
+  document.getElementById("unread-list").innerHTML    = userList(unread, true);
+  document.getElementById("read-list").innerHTML      = userList(read, false);
   if (unread.length > 0) {
     document.getElementById("send-btn").style.display = "inline-flex";
     document.getElementById("send-count").textContent = unread.length;
   }
-
   document.getElementById("modal-loading").style.display = "none";
   document.getElementById("modal-content").style.display = "flex";
 }
 
-function renderUserList(users, showNoEmail) {
-  if (users.length === 0) {
+function userList(users, showNoEmail) {
+  if (!users.length) {
     const msg = showNoEmail ? "Everyone has acknowledged! 🎉" : "No acknowledgements yet.";
-    return `<li style="padding:32px 24px;text-align:center;color:var(--text-secondary);">${msg}</li>`;
+    return `<li style="padding:32px 24px;text-align:center;color:var(--text-sec);">${msg}</li>`;
   }
   return users.map(u => {
     const name    = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown user";
@@ -591,10 +542,10 @@ function renderUserList(users, showNoEmail) {
   }).join("");
 }
 
-function switchTab(tab) {
-  ["unread","read"].forEach(t => {
-    document.getElementById(`tab-${t}`).classList.toggle("active", t === tab);
-    document.getElementById(`${t}-list`).style.display = t === tab ? "block" : "none";
+function switchTab(t) {
+  ["unread","read"].forEach(id => {
+    document.getElementById(`tab-${id}`).classList.toggle("active", id === t);
+    document.getElementById(`${id}-list`).style.display = id === t ? "block" : "none";
   });
 }
 
@@ -605,28 +556,24 @@ function closeModal() { document.getElementById("ack-modal").classList.add("hidd
 
 async function sendReminders() {
   if (!currentStatus) return;
+  if (!cfg.emailUrl) {
+    toast("Email service URL not configured in Settings.", "error");
+    document.getElementById("settings-card").style.display = "block";
+    return;
+  }
   const btn = document.getElementById("send-btn");
-  btn.disabled = true;
-  btn.textContent = "Sending…";
+  btn.disabled = true; btn.textContent = "Sending…";
   try {
-    const res  = await fetch("/api/send-reminder", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        postId:    currentStatus.postId,
-        postTitle: currentStatus.postTitle,
-        postUrl:   currentStatus.postUrl,
-        userIds:   currentStatus.notAcknowledgedUsers.map(u => u.userId),
-      }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-    toast(
-      data.skipped > 0
-        ? `Sent to ${data.sent}, skipped ${data.skipped} (no email).`
-        : `Reminder sent to ${data.sent} recipient(s).`,
-      "success"
-    );
+    const data = await post("/api/send-reminder", withCreds({
+      emailServiceUrl: cfg.emailUrl,
+      postId:    currentStatus.postId,
+      postTitle: currentStatus.postTitle,
+      postUrl:   currentStatus.postUrl,
+      userIds:   currentStatus.notAcknowledgedUsers.map(u => u.userId),
+    }));
+    toast(data.skipped > 0
+      ? `Sent to ${data.sent}, skipped ${data.skipped} (no email).`
+      : `Reminder sent to ${data.sent} recipient(s).`, "success");
     closeModal();
   } catch (err) {
     toast(err.message, "error");
@@ -638,33 +585,20 @@ async function sendReminders() {
 
 // ── Utilities ─────────────────────────────────────────────────────────────
 
-function getPostTitle(post) {
-  if (!post.contents) return post.id;
-  return Object.values(post.contents).find(l => l?.title)?.title ?? post.id;
+function getTitle(p) {
+  if (!p.contents) return p.id;
+  return Object.values(p.contents).find(l => l?.title)?.title ?? p.id;
 }
-
 function fmtDate(iso) {
   return new Date(iso).toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
 }
-
 function esc(s) {
-  return String(s ?? "")
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
-function setPostsArea(html) { document.getElementById("posts-area").innerHTML = html; }
-
-function loadingHTML(msg) {
-  return `<div class="empty"><div class="spinner"></div><p class="empty-title" style="margin-top:12px;">${esc(msg)}</p></div>`;
-}
-function emptyHTML(title, body) {
-  return `<div class="empty"><p class="empty-title">${esc(title)}</p><p style="margin-top:6px;">${esc(body)}</p></div>`;
-}
-function errorHTML(title, detail) {
-  return `<div class="error-banner"><strong>${esc(title)}</strong>${esc(detail)}</div>`;
-}
-
+function setArea(html) { document.getElementById("posts-area").innerHTML = html; }
+function loadingHTML(m) { return `<div class="empty"><div class="spinner"></div><p class="empty-title" style="margin-top:12px;">${esc(m)}</p></div>`; }
+function emptyHTML(t, b)  { return `<div class="empty"><p class="empty-title">${esc(t)}</p><p style="margin-top:6px;">${esc(b)}</p></div>`; }
+function errorHTML(t, d)  { return `<div class="error-box"><strong>${esc(t)}</strong>${esc(d)}</div>`; }
 function toast(msg, type = "") {
   const el = document.createElement("div");
   el.className = ["toast", type].filter(Boolean).join(" ");
@@ -674,7 +608,11 @@ function toast(msg, type = "") {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
-loadAll();
+loadFromStorage();
+if (cfg.url && cfg.token) {
+  document.getElementById("settings-card").style.display = "none";
+  loadPosts();
+}
 </script>
 </body>
 </html>
